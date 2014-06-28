@@ -35,6 +35,23 @@ ALLEGRO_TIMER* gettimer (float periodo);             //un timer que genera event
 
 
 
+/*      cambiopantalla()
+ *  Esta funcion es muy importante para realizarle cambios a la pantalla de nuestro celular.
+ * SE DEBE LLAMAR A ESTA FUNCION DOS VECES, para modificar cierto bitmap, en nuestro caso la pantala
+ * una vez antes de realizar los cambios, y otra despues. 
+ * 
+ * Esta fucion automatiza la cantidad de veces que deberemos actualizar la pantalla
+ * 
+ */
+
+void cambiopantalla (ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla);
+
+/*      analizarteclado()
+ *      Esta funcion se encarga de analizar, por medio del mouse, las teclas que se aprietan en el teclado virtual de el celular
+ * 
+ */
+
+int analizarteclado (ALLEGRO_EVENT_QUEUE* eventos);
 
 
 

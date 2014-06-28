@@ -16,15 +16,33 @@
 #include <allegro5/allegro_ttf.h>
 #include "Final.h"
 
-/* Esta funcion es muy importante para realizarle cambios a la pantalla de nuestro celular.
- * SE DEBE LLAMAR A ESTA FUNCION DOS VECES, para modificar cierto bitmap, en nuestro caso la pantala
- * una vez antes de realizar los cambios, y otra despues. 
- * 
- * Esta fucion automatiza la cantidad de veces que deberemos actualizar la pantalla
- * 
- */
 
-void cambiopantalla (ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla);
+
+/*Estructura utilizada para chequear la data personalisable del usuario*/
+typedef struct{ 
+    char usuario[20];
+    int compania;   
+    ALLEGRO_COLOR colorfondo;         //si empieza en 0, es el default, de la compania
+    char mensajepersonal[140];  //podra tener un mensaje personal de 140 caracteres
+    ALLEGRO_COLOR colormensaje;
+    int tamanomensaje;          // si es mayor al del que entraria en la pantalla, se toma como el predeterminado(12)
+}INFOPANTALLA;
+
+#define MOVISTAR    0
+#define PERSONAL    1
+#define CLARO       2
+#define NEXTEL      3
+#define PEQUENA     12
+#define MEDIA       22
+#define GRANDE      36
+#define GIGANTE     72
+
+
+
+
+void iniciarpantalla(INFOPANTALLA datos, ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla);
+/*Crea una fuente (del estilo predeterminado) del tamaño pedido*/
+ALLEGRO_FONT* crearfuente (int tamano);
 
 
 /*
@@ -85,11 +103,155 @@ int main(int argc, char** argv) {
      */
 
     
-    // getuserdata();  esta funcion lo que hara es de un archivo leer cual es la data que configuro el usuario
+    // getuserdata();  esta funcion lo que hara es de un archivo leer cual es la data que configuro el usuario. Lo que devuelve es una estructura del tipo infopantalla
+    
+    // iniciarpantalla(estructura, ALLEGRO_DISPLAY* , ALLEGRO_BITMAP*);     a esta funcion se le pasara la estructura del tipo pedido y lo que hara es segun esta estructura, modificar la pantalla
+    //las ultimas dos opciones son para la funcion cambio pantalla
     
     al_start_timer(timer);   //inicializo el timer
     
-    //de aca en adelante es simplemente la funcionde leerteclado que por comodidad no la pongo afuera
+    INFOPANTALLA mipantalla={"Augusto",PERSONAL,al_map_rgb(0,0,0),"",al_map_rgb(0,0,255),14};
+    
+    iniciarpantalla(mipantalla,display,pantalla);
+    
+    analizarteclado(eventos);
+    
+    return (EXIT_SUCCESS);
+}
+
+
+ALLEGRO_FONT* crearfuente (int tamano){
+    ALLEGRO_FONT* fuente=NULL;
+    
+    fuente=al_load_ttf_font("PTS55F.ttf",tamano,0);      //cargo la fuente predeterminada con el tamano pedido
+    
+    
+    if (fuente==NULL){
+        fprintf(stderr,"No se pudo cargar la imagen, el programa finalizara.\n");
+        sleep(2);
+        exit -1;
+    }
+    
+    return fuente;
+    
+}
+
+void iniciarpantalla(INFOPANTALLA datos, ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla){       //chequear que el mensaje personal no se pase de 140
+    ALLEGRO_BITMAP* compania;
+    ALLEGRO_FONT* fuente;
+    ALLEGRO_BITMAP* partearriba=NULL;        //sera un bitmp color grisaceo para darle mas armonia al menu principal
+    
+    partearriba=al_create_bitmap(285,15);
+    if(partearriba==NULL){fprintf(stderr,"Error al cargar el bitmap.\nEXITING PROGRAM \n"); exit-1;}
+    
+    al_set_target_bitmap(partearriba);
+    al_clear_to_color(al_map_rgb(50,50,200));
+    
+    
+    /*En datos. compania no debe haber otra cosa mas que un 0 1 2 o 3, si no, esto no tiene sentido*/
+    if (datos.compania==PERSONAL){                  //si me dice que la persona es usuario de personal
+        compania=al_load_bitmap("personal.png");
+        fuente=crearfuente(PEQUENA);
+        
+        cambiopantalla(display,pantalla);                                               //prendo la pantalla con su nombre
+        al_draw_bitmap(compania,-60,0,0);
+        cambiopantalla(display,pantalla);
+        
+        sleep(2);                               //espero 2 segundos de manera que parezca que se esta prendiendo
+        
+        cambiopantalla(display,pantalla);
+        al_draw_bitmap(partearriba,0,0,0);
+        al_draw_text(fuente,al_map_rgb(0,0,0),0,0,ALLEGRO_ALIGN_LEFT,"Personal");
+        cambiopantalla(display,pantalla);
+        
+        
+    } else if(datos.compania==MOVISTAR){            //mismo procedimiento con movistar, nextel o claro
+        compania=al_load_bitmap("movistar.png");
+        fuente=crearfuente(PEQUENA);
+        
+        cambiopantalla(display,pantalla);                                               //prendo la pantalla con su nombre
+        al_draw_bitmap(compania,-60,0,0);
+        cambiopantalla(display,pantalla);
+        
+        sleep(2);                               //espero 2 segundos de manera que parezca que se esta prendiendo
+        
+        cambiopantalla(display,pantalla);
+        al_draw_bitmap(partearriba,0,0,0);
+        al_draw_text(fuente,al_map_rgb(0,0,0),0,0,ALLEGRO_ALIGN_LEFT,"Movistar");
+        cambiopantalla(display,pantalla); 
+        
+        
+    } else if(datos.compania==CLARO){            
+        compania=al_load_bitmap("claro.png");
+        fuente=crearfuente(PEQUENA);
+        
+        cambiopantalla(display,pantalla);                                               
+        al_draw_bitmap(compania,-60,0,0);
+        cambiopantalla(display,pantalla);
+        
+        sleep(2);                               
+        
+        cambiopantalla(display,pantalla);
+        al_draw_bitmap(partearriba,0,0,0);
+        al_draw_text(fuente,al_map_rgb(0,0,0),0,0,ALLEGRO_ALIGN_LEFT,"Claro");
+        cambiopantalla(display,pantalla); 
+        
+        
+    } else if(datos.compania==NEXTEL){              //es solo para agregar variedad, ya que no tiene sentido un nokia con compania NEXTEL         
+        compania=al_load_bitmap("nextel.png");
+        fuente=crearfuente(PEQUENA);
+        
+        cambiopantalla(display,pantalla);                                               //prendo la pantalla con su nombre
+        al_draw_bitmap(compania,-60,0,0);
+        cambiopantalla(display,pantalla);
+        
+        sleep(2);                               //espero 2 segundos de manera que parezca que se esta prendiendo
+        
+        cambiopantalla(display,pantalla);
+        al_draw_bitmap(partearriba,0,0,0);
+        al_draw_text(fuente,al_map_rgb(0,0,0),0,0,ALLEGRO_ALIGN_LEFT,"Nextel");
+        cambiopantalla(display,pantalla); 
+    }
+    
+    //me encargare del nombre del usuario
+    
+    cambiopantalla(display,pantalla);
+    al_draw_text(fuente,al_map_rgb(0,0,0),106,0,ALLEGRO_ALIGN_CENTRE,datos.usuario);    //106 es para que este en el medio del bitmap (long 213 de x) y datos.usuario es un char*
+    al_draw_text(fuente,al_map_rgb(0,0,0),213,0,ALLEGRO_ALIGN_RIGHT,__TIME__);
+    cambiopantalla(display,pantalla);
+    
+    cambiopantalla(display,pantalla);           //aqui se escribira el mensaje personal elegido por el usuario, e su color elegido y tamaño
+    fuente=crearfuente(datos.tamanomensaje);
+    al_draw_text(fuente,datos.colormensaje,0,30,ALLEGRO_ALIGN_LEFT,datos.mensajepersonal);
+    cambiopantalla(display,pantalla);
+    
+    
+    fuente=crearfuente(MEDIA);
+    cambiopantalla(display,pantalla);
+    al_draw_text(fuente,al_map_rgb(0,0,0),0,270,ALLEGRO_ALIGN_LEFT,"Menu");         //creo boton menu o cualquier otro boton que quiera poner
+    cambiopantalla(display,pantalla);
+    
+    
+}
+
+void cambiopantalla (ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla){
+    static bool modificopantalla=false;
+    if(!modificopantalla){
+        al_set_target_bitmap(pantalla);
+        
+        modificopantalla=!modificopantalla;
+    } else if(modificopantalla){
+        al_set_target_bitmap(al_get_backbuffer(display));       
+        al_draw_bitmap(pantalla,48,118,0);
+        al_flip_display();  
+        
+        modificopantalla=!modificopantalla;
+    }
+    
+}
+
+int analizarteclado (ALLEGRO_EVENT_QUEUE* eventos){
+        //de aca en adelante es simplemente la funcionde leerteclado que por comodidad no la pongo afuera
     int teclaselect=0,teclallamar=0,tecla1=0,tecla2=0,tecla3=0,tecla4=0,tecla5=0,tecla6=0,tecla7=0,tecla8=0,tecla9=0,teclanum=0,tecla0=0,teclaast=0,teclaup=0,tecladown=0,teclaizq=0,teclader=0,teclamed=0,teclaback=0,teclacolg=0;
     
     
@@ -98,7 +260,7 @@ int main(int argc, char** argv) {
         al_wait_for_event(eventos,&ev);
         
         if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-         break;
+            break;
         } else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
             if(ev.mouse.button & 1){
                 //aca iran los ifs que veran el ev.mouse.x y el ev.mouse.y
@@ -173,28 +335,8 @@ int main(int argc, char** argv) {
     
 
     printf("Seleccionar:%d,\n LLamar:%d\n,1:%d,\n4:%d,\n7:%d\n,asterisco:%d.\nArriba:%d\n,Abajo:%d,\nMedio:%d\n,izq%d\n,der%d\n,2:%d\n,5:%d\n,8:%d\n,0:%d\nback:%d\n,colgar:%d\n,3:%d\n,6:%d\n,9:%d\n,numeral:%d\n",teclaselect,teclallamar,tecla1,tecla4,tecla7,teclaast,teclaup,tecladown,teclamed,teclaizq,teclader,tecla2,tecla5,tecla8,tecla0,teclaback,teclacolg,tecla3,tecla6,tecla9,teclanum);
-    
-    return (EXIT_SUCCESS);
+    return 0;
 }
-
-
-void cambiopantalla (ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla){
-    static bool modificopantalla=false;
-    if(!modificopantalla){
-        al_set_target_bitmap(pantalla);
-        
-        modificopantalla=!modificopantalla;
-    } else if(modificopantalla){
-        al_set_target_bitmap(al_get_backbuffer(display));       
-        al_draw_bitmap(pantalla,48,118,0);
-        al_flip_display();  
-        
-        modificopantalla=!modificopantalla;
-    }
-    
-}
-
-
 
 ALLEGRO_DISPLAY* getdisplay(int ancho, int alto){
     
