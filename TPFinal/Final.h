@@ -10,18 +10,147 @@
 
 
 /*
- * Definicion de constantes
+ * Definicion de constantes que serviran para diferenes motivos
  */
 #define ERROR           NULL
 #define FPS             60
 #define PANTALLA_ANCHO  330
 #define PANTALLA_ALTO   765
+#define MOVISTAR    0
+#define PERSONAL    1
+#define CLARO       2
+#define NEXTEL      3
+#define PEQUENA     12
+#define MEDIA       22
+#define GRANDE      36
+#define GIGANTE     72
+
+#define PANTALLAPRINCIPAL   0
+#define MENU                1
+#define MENSAJE             2
+#define PERSONALIZAR        3
+#define JUEGO               4
+#define FINALIZAR           -1
+
+#define PVOLVER         0
+#define PMENSAJE        1
+#define PPERSONALIZAR   2       //estas variables tienen que ver con a donde se apuntara, cual sera el proximo estado
+#define PSTAY           3
+#define PJUEGO          4
+
+#define POS1            50
+#define POS2            100
+#define POS3            150
+#define POS4            200
 
 
+#define NOCAMBIO    0
+#define ROJO        1
+#define AMARILLO    2
+#define VERDE       3
+#define MORADO      4
+#define CELESTE     5
+#define NARANJA     6
+#define ROSA        7
+#define T9              0
+#define MODOLIBRE       1
+#define TECLADOANALOGO  2
+
+#define USUARIO             0
+#define COMPANIA            1
+#define MENSAJEPERSONAL     2
+#define TIPOESCRITURA       3
+#define FONDO               4
+#define INUSUARIO           5
+#define INCOMPANIA          6
+#define MPCOLOR             7
+#define MPTEXTO             8           //estos defines son para manejar el estadoconfiguracion
+#define MPTAMANO            9
+#define TT9                 10
+#define CLASICO             11
+#define TECLADONORMAL       12
+#define FBLANCO             13   
+#define FROJO               14
+#define FAMARILLO           15
+#define FVERDE              16
+#define FMORADO             17
+#define FCELESTE            18
+#define FNARANJA            19
+#define FROSA               20
+#define CMOVISTAR           21
+#define CPERSONAL           22
+#define CCLARO              23
+#define CNEXTEL             24
+
+#define CONF1   20
+#define CONF2   55
+#define CONF3   90
+#define CONF4   125
+#define CONF5   160
+
+
+/*Estructura utilizada para chequear la data personalisable del usuario*/
+typedef struct{ 
+    char usuario[20];
+    int compania;
+    struct{
+        ALLEGRO_COLOR colorfondo;         //si empieza en 0, es el default, de la compania
+        int entro;
+    }fondo;
+    char mensajepersonal[140];  //podra tener un mensaje personal de 140 caracteres
+    struct{
+        ALLEGRO_COLOR colormensaje;
+        int tipocolor;
+    }mensajecolor;    
+    int tamanomensaje;          // si es mayor al del que entraria en la pantalla, se toma como el predeterminado(12)
+    int tipoescritura;
+}INFOPANTALLA;
 
 /*
  * Definicion de funciones
  */
+
+/*Toma la data inicial del userdata*/
+INFOPANTALLA getuserdata(void);
+
+/*Pone la data principal*/
+void putuserdata (INFOPANTALLA mipantalla);
+
+/*Configura el mantenerconfiguracion*/
+void mantenerconfiguracion(int * estadoconfiguracion,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla);
+
+
+/*analiza el eclado estando en la configuracion*/
+int analizartecladoconfiguracion (ALLEGRO_EVENT_QUEUE* eventos,int* estadoconfiguracion, int* pestado,INFOPANTALLA* pantalla);
+
+/*Analiza el teclado cuando esta en el menu*/
+int analizartecladomenu (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,int* estadomenu);
+
+
+/*Mantiene el menu*/
+void mantenermenu(int* pestado, int* estadomenu,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla, INFOPANTALLA mipantalla);
+
+
+/*Es la forma de ver el teclado mientras se esta en este estado*/
+int analizartecladopantalla (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla);
+
+
+/*Cada vez que se vuelve al estado de pantalla, se actualiza segn los datos*/
+void mantenerpantalla(INFOPANTALLA datos,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla);
+
+
+/* La idea es que el usuario tenga cosas personalizables, que se guardaran en la estructura llamada pantalla, esta funcion
+ * dependiendo de las configuraciones niniciales, hara lo mismo
+ *
+ */
+
+void iniciarpantalla(INFOPANTALLA datos, ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla);
+
+
+
+/*Crea una fuente (del estilo predeterminado) del tamaño pedido*/
+ALLEGRO_FONT* crearfuente (int tamano);
+
 
 /*Inicializara los componentes de allegro*/
 

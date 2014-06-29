@@ -14,42 +14,20 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_ttf.h>
+#include <string.h>
 #include "Final.h"
-
-
-
-/*Estructura utilizada para chequear la data personalisable del usuario*/
-typedef struct{ 
-    char usuario[20];
-    int compania;   
-    ALLEGRO_COLOR colorfondo;         //si empieza en 0, es el default, de la compania
-    char mensajepersonal[140];  //podra tener un mensaje personal de 140 caracteres
-    ALLEGRO_COLOR colormensaje;
-    int tamanomensaje;          // si es mayor al del que entraria en la pantalla, se toma como el predeterminado(12)
-}INFOPANTALLA;
-
-#define MOVISTAR    0
-#define PERSONAL    1
-#define CLARO       2
-#define NEXTEL      3
-#define PEQUENA     12
-#define MEDIA       22
-#define GRANDE      36
-#define GIGANTE     72
-
-
-
-
-void iniciarpantalla(INFOPANTALLA datos, ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla);
-/*Crea una fuente (del estilo predeterminado) del tamaño pedido*/
-ALLEGRO_FONT* crearfuente (int tamano);
 
 
 /*
  *Main
  */
 int main(int argc, char** argv) {
-
+    int estado=0;
+    int* pestado=&estado;
+    int estadomenu=POS1;
+    int* pestadomenu=&estadomenu;
+    int estadoconfiguracion=USUARIO;
+    int* pestadoconfiguracion=&estadoconfiguracion;
     int condiciones=0;      //por lo que me devuelva la funcion setear comienzo
     
     if(inicializar()){
@@ -103,156 +81,46 @@ int main(int argc, char** argv) {
      */
 
     
-    // getuserdata();  esta funcion lo que hara es de un archivo leer cual es la data que configuro el usuario. Lo que devuelve es una estructura del tipo infopantalla
-    
-    // iniciarpantalla(estructura, ALLEGRO_DISPLAY* , ALLEGRO_BITMAP*);     a esta funcion se le pasara la estructura del tipo pedido y lo que hara es segun esta estructura, modificar la pantalla
-    //las ultimas dos opciones son para la funcion cambio pantalla
     
     al_start_timer(timer);   //inicializo el timer
     
-    INFOPANTALLA mipantalla={"Augusto",PERSONAL,al_map_rgb(0,0,0),"",al_map_rgb(0,0,255),14};
-    
+    INFOPANTALLA mipantalla=getuserdata();
+    INFOPANTALLA* pmipantalla=&mipantalla;
     iniciarpantalla(mipantalla,display,pantalla);
     
-    analizarteclado(eventos);
+    while(estado!=FINALIZAR){
+        if(estado==PANTALLAPRINCIPAL){
+            mantenerpantalla(mipantalla,display,pantalla);
+            analizartecladopantalla(eventos,pestado,display,pantalla);
+            
+        } 
+        if(estado==MENU){
+            mantenermenu(pestado,pestadomenu,display,pantalla,mipantalla);
+            analizartecladomenu(eventos,pestado,pestadomenu);
+        }
+        if(estado==MENSAJE){
+            break;
+        }
+        if(estado==PERSONALIZAR){
+            mantenerconfiguracion(pestadoconfiguracion,display,pantalla);
+            analizartecladoconfiguracion(eventos,pestadoconfiguracion,pestado,pmipantalla);
+            
+            
+                    
+        }
+        
+        
+        
+    }
+    
+    putuserdata(mipantalla);
     
     return (EXIT_SUCCESS);
 }
 
 
-ALLEGRO_FONT* crearfuente (int tamano){
-    ALLEGRO_FONT* fuente=NULL;
-    
-    fuente=al_load_ttf_font("PTS55F.ttf",tamano,0);      //cargo la fuente predeterminada con el tamano pedido
-    
-    
-    if (fuente==NULL){
-        fprintf(stderr,"No se pudo cargar la imagen, el programa finalizara.\n");
-        sleep(2);
-        exit -1;
-    }
-    
-    return fuente;
-    
-}
-
-void iniciarpantalla(INFOPANTALLA datos, ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla){       //chequear que el mensaje personal no se pase de 140
-    ALLEGRO_BITMAP* compania;
-    ALLEGRO_FONT* fuente;
-    ALLEGRO_BITMAP* partearriba=NULL;        //sera un bitmp color grisaceo para darle mas armonia al menu principal
-    
-    partearriba=al_create_bitmap(285,15);
-    if(partearriba==NULL){fprintf(stderr,"Error al cargar el bitmap.\nEXITING PROGRAM \n"); exit-1;}
-    
-    al_set_target_bitmap(partearriba);
-    al_clear_to_color(al_map_rgb(50,50,200));
-    
-    
-    /*En datos. compania no debe haber otra cosa mas que un 0 1 2 o 3, si no, esto no tiene sentido*/
-    if (datos.compania==PERSONAL){                  //si me dice que la persona es usuario de personal
-        compania=al_load_bitmap("personal.png");
-        fuente=crearfuente(PEQUENA);
-        
-        cambiopantalla(display,pantalla);                                               //prendo la pantalla con su nombre
-        al_draw_bitmap(compania,-60,0,0);
-        cambiopantalla(display,pantalla);
-        
-        sleep(2);                               //espero 2 segundos de manera que parezca que se esta prendiendo
-        
-        cambiopantalla(display,pantalla);
-        al_draw_bitmap(partearriba,0,0,0);
-        al_draw_text(fuente,al_map_rgb(0,0,0),0,0,ALLEGRO_ALIGN_LEFT,"Personal");
-        cambiopantalla(display,pantalla);
-        
-        
-    } else if(datos.compania==MOVISTAR){            //mismo procedimiento con movistar, nextel o claro
-        compania=al_load_bitmap("movistar.png");
-        fuente=crearfuente(PEQUENA);
-        
-        cambiopantalla(display,pantalla);                                               //prendo la pantalla con su nombre
-        al_draw_bitmap(compania,-60,0,0);
-        cambiopantalla(display,pantalla);
-        
-        sleep(2);                               //espero 2 segundos de manera que parezca que se esta prendiendo
-        
-        cambiopantalla(display,pantalla);
-        al_draw_bitmap(partearriba,0,0,0);
-        al_draw_text(fuente,al_map_rgb(0,0,0),0,0,ALLEGRO_ALIGN_LEFT,"Movistar");
-        cambiopantalla(display,pantalla); 
-        
-        
-    } else if(datos.compania==CLARO){            
-        compania=al_load_bitmap("claro.png");
-        fuente=crearfuente(PEQUENA);
-        
-        cambiopantalla(display,pantalla);                                               
-        al_draw_bitmap(compania,-60,0,0);
-        cambiopantalla(display,pantalla);
-        
-        sleep(2);                               
-        
-        cambiopantalla(display,pantalla);
-        al_draw_bitmap(partearriba,0,0,0);
-        al_draw_text(fuente,al_map_rgb(0,0,0),0,0,ALLEGRO_ALIGN_LEFT,"Claro");
-        cambiopantalla(display,pantalla); 
-        
-        
-    } else if(datos.compania==NEXTEL){              //es solo para agregar variedad, ya que no tiene sentido un nokia con compania NEXTEL         
-        compania=al_load_bitmap("nextel.png");
-        fuente=crearfuente(PEQUENA);
-        
-        cambiopantalla(display,pantalla);                                               //prendo la pantalla con su nombre
-        al_draw_bitmap(compania,-60,0,0);
-        cambiopantalla(display,pantalla);
-        
-        sleep(2);                               //espero 2 segundos de manera que parezca que se esta prendiendo
-        
-        cambiopantalla(display,pantalla);
-        al_draw_bitmap(partearriba,0,0,0);
-        al_draw_text(fuente,al_map_rgb(0,0,0),0,0,ALLEGRO_ALIGN_LEFT,"Nextel");
-        cambiopantalla(display,pantalla); 
-    }
-    
-    //me encargare del nombre del usuario
-    
-    cambiopantalla(display,pantalla);
-    al_draw_text(fuente,al_map_rgb(0,0,0),106,0,ALLEGRO_ALIGN_CENTRE,datos.usuario);    //106 es para que este en el medio del bitmap (long 213 de x) y datos.usuario es un char*
-    al_draw_text(fuente,al_map_rgb(0,0,0),213,0,ALLEGRO_ALIGN_RIGHT,__TIME__);
-    cambiopantalla(display,pantalla);
-    
-    cambiopantalla(display,pantalla);           //aqui se escribira el mensaje personal elegido por el usuario, e su color elegido y tamaño
-    fuente=crearfuente(datos.tamanomensaje);
-    al_draw_text(fuente,datos.colormensaje,0,30,ALLEGRO_ALIGN_LEFT,datos.mensajepersonal);
-    cambiopantalla(display,pantalla);
-    
-    
-    fuente=crearfuente(MEDIA);
-    cambiopantalla(display,pantalla);
-    al_draw_text(fuente,al_map_rgb(0,0,0),0,270,ALLEGRO_ALIGN_LEFT,"Menu");         //creo boton menu o cualquier otro boton que quiera poner
-    cambiopantalla(display,pantalla);
-    
-    
-}
-
-void cambiopantalla (ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla){
-    static bool modificopantalla=false;
-    if(!modificopantalla){
-        al_set_target_bitmap(pantalla);
-        
-        modificopantalla=!modificopantalla;
-    } else if(modificopantalla){
-        al_set_target_bitmap(al_get_backbuffer(display));       
-        al_draw_bitmap(pantalla,48,118,0);
-        al_flip_display();  
-        
-        modificopantalla=!modificopantalla;
-    }
-    
-}
-
-int analizarteclado (ALLEGRO_EVENT_QUEUE* eventos){
+int analizartecladoconfiguracion (ALLEGRO_EVENT_QUEUE* eventos,int * estadoconfiguracion, int* pestado, INFOPANTALLA* pantalla){
         //de aca en adelante es simplemente la funcionde leerteclado que por comodidad no la pongo afuera
-    int teclaselect=0,teclallamar=0,tecla1=0,tecla2=0,tecla3=0,tecla4=0,tecla5=0,tecla6=0,tecla7=0,tecla8=0,tecla9=0,teclanum=0,tecla0=0,teclaast=0,teclaup=0,tecladown=0,teclaizq=0,teclader=0,teclamed=0,teclaback=0,teclacolg=0;
     
     
     while(1){                   // esto es la funcion que lee de donde se clickeo
@@ -264,166 +132,295 @@ int analizarteclado (ALLEGRO_EVENT_QUEUE* eventos){
         } else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
             if(ev.mouse.button & 1){
                 //aca iran los ifs que veran el ev.mouse.x y el ev.mouse.y
-                if(ev.mouse.x>30&&ev.mouse.x<110){      //pueden ser el select, llamar,1,4,7,*
-                    if(ev.mouse.y>450&&ev.mouse.y<490){
-                        ++teclaselect;      //se presiono la teclaselect
+                if(ev.mouse.x>30&&ev.mouse.x<110){      
+                    if(ev.mouse.y>450&&ev.mouse.y<490){             //TECLA SELECT
+                            if(*estadoconfiguracion==USUARIO){*estadoconfiguracion=INUSUARIO;break;} 
+                            
+                            else if(*estadoconfiguracion==COMPANIA){*estadoconfiguracion=CMOVISTAR; break;}
+                            
+                            else if(*estadoconfiguracion==CMOVISTAR){*estadoconfiguracion=USUARIO; pantalla->compania=MOVISTAR; break; }
+                            
+                            else if(*estadoconfiguracion==CPERSONAL){*estadoconfiguracion=USUARIO; pantalla->compania=PERSONAL; break;}
+                            
+                            else if(*estadoconfiguracion==CCLARO){*estadoconfiguracion=USUARIO; pantalla->compania=CLARO; break;}
+                            
+                            else if(*estadoconfiguracion==CNEXTEL){*estadoconfiguracion=USUARIO; pantalla->compania=NEXTEL; break;}
+                            
+                            else if(*estadoconfiguracion==TIPOESCRITURA){*estadoconfiguracion=TT9; break;}
+                            
+                            else if(*estadoconfiguracion==TT9){*estadoconfiguracion=USUARIO; pantalla->tipoescritura=T9; break;}
+                            
+                            else if(*estadoconfiguracion==CLASICO){*estadoconfiguracion=USUARIO; pantalla->tipoescritura=MODOLIBRE; break;}
+                            
+                            else if(*estadoconfiguracion==TECLADONORMAL){*estadoconfiguracion=USUARIO; pantalla->tipoescritura=TECLADOANALOGO; break;}
+                            else if(*estadoconfiguracion==FONDO){*estadoconfiguracion=FBLANCO; break;}
+                            
+                            else if(*estadoconfiguracion==FBLANCO){*estadoconfiguracion=USUARIO; pantalla->fondo.entro=NOCAMBIO; break;}
+                            
+                            else if(*estadoconfiguracion==FROJO){*estadoconfiguracion=USUARIO; pantalla->fondo.entro=ROJO; break;}
+                            else if(*estadoconfiguracion==FAMARILLO){*estadoconfiguracion=USUARIO; pantalla->fondo.entro=AMARILLO; break;}
+                            else if(*estadoconfiguracion==FVERDE){*estadoconfiguracion=USUARIO; pantalla->fondo.entro=VERDE; break;}
+                            else if(*estadoconfiguracion==FMORADO){*estadoconfiguracion=USUARIO; pantalla->fondo.entro=MORADO; break;}
+                            else if(*estadoconfiguracion==FCELESTE){*estadoconfiguracion=USUARIO; pantalla->fondo.entro=CELESTE; break;}
+                            else if(*estadoconfiguracion==FNARANJA){*estadoconfiguracion=USUARIO; pantalla->fondo.entro=NARANJA; break;}
+                            else if(*estadoconfiguracion==FROSA){*estadoconfiguracion=USUARIO; pantalla->fondo.entro=ROSA; break;}
+                            
                     }
-                    else if(ev.mouse.y>490&&ev.mouse.y<540){
-                        ++teclallamar;      //tecla verde, llamar
-                    }
-                    else if(ev.mouse.y>540&&ev.mouse.y<585){
-                        ++tecla1;           //tecla 1
-                    }
-                    else if(ev.mouse.y>585&&ev.mouse.y<630){
-                        ++tecla4;           //tecla 4
-                    }
-                    else if(ev.mouse.y>630&&ev.mouse.y<675){
-                        ++tecla7;           //tecla7
-                    }
-                    else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x>50){
-                        ++teclaast;         //tecla asterisco
-                    }    
+                       
                 } else if(ev.mouse.x>110&&ev.mouse.x<208){  //son las teclas de la linea media que incluyen los centrales
                     //analizo primero lo de las "flechitas"y el boton del medio
                     if(ev.mouse.y>450&&ev.mouse.y<460){
-                        ++teclaup;      //tecla para arrriba
+                            if(*estadoconfiguracion==COMPANIA){*estadoconfiguracion=USUARIO; break;}  //tecla para arrriba
+                            
+                            else if(*estadoconfiguracion==COMPANIA){*estadoconfiguracion=USUARIO; break;}
+                            
+                            else if(*estadoconfiguracion==CPERSONAL){*estadoconfiguracion=CMOVISTAR; break;}
+                            
+                            else if(*estadoconfiguracion==CCLARO){*estadoconfiguracion=CPERSONAL; break;}
+                            
+                            else if(*estadoconfiguracion==CNEXTEL){*estadoconfiguracion=CCLARO; break;}
+                            
+                            else if(*estadoconfiguracion==MENSAJEPERSONAL){*estadoconfiguracion=COMPANIA; break;}
+                            
+                            else if(*estadoconfiguracion==TIPOESCRITURA){*estadoconfiguracion=MENSAJEPERSONAL; break;}
+                            
+                            else if(*estadoconfiguracion==FONDO){*estadoconfiguracion=TIPOESCRITURA; break;}
+                            
+                            else if(*estadoconfiguracion==FROJO){*estadoconfiguracion=FBLANCO; break;}
+                            else if(*estadoconfiguracion==FAMARILLO){*estadoconfiguracion=FROJO; break;}
+                            else if(*estadoconfiguracion==FVERDE){*estadoconfiguracion=FAMARILLO; break;}
+                            else if(*estadoconfiguracion==FMORADO){*estadoconfiguracion=FVERDE; break;}
+                            else if(*estadoconfiguracion==FCELESTE){*estadoconfiguracion=FMORADO; break;}
+                            else if(*estadoconfiguracion==FNARANJA){*estadoconfiguracion=FCELESTE; break;}
+                            else if(*estadoconfiguracion==FROSA){*estadoconfiguracion=FNARANJA; break;}
+                            
+                            
+                            
+                            
+                            
+                        
+                        
                     } else if (ev.mouse.y>525&&ev.mouse.y<540){
-                        ++tecladown;    //teclaparaabajo
+                           if(*estadoconfiguracion==USUARIO){*estadoconfiguracion=COMPANIA; break;} //teclaparaabajo
+                           
+                           else if(*estadoconfiguracion==COMPANIA){*estadoconfiguracion=MENSAJEPERSONAL; break;}
+                           else if(*estadoconfiguracion==MENSAJEPERSONAL){*estadoconfiguracion=TIPOESCRITURA; break;}
+                           else if(*estadoconfiguracion==TIPOESCRITURA){*estadoconfiguracion=FONDO; break;}
+                           else if(*estadoconfiguracion==CMOVISTAR){*estadoconfiguracion=CPERSONAL; break;}
+                           else if(*estadoconfiguracion==CPERSONAL){*estadoconfiguracion=CCLARO; break;}
+                           else if(*estadoconfiguracion==CCLARO){*estadoconfiguracion=CNEXTEL; break;}
+                           
+                           else if(*estadoconfiguracion==FBLANCO){*estadoconfiguracion=FROJO; break;}
+                           else if(*estadoconfiguracion==FROJO){*estadoconfiguracion=FAMARILLO; break;}
+                            else if(*estadoconfiguracion==FAMARILLO){*estadoconfiguracion=FVERDE; break;}
+                            else if(*estadoconfiguracion==FVERDE){*estadoconfiguracion=FMORADO; break;}
+                            else if(*estadoconfiguracion==FMORADO){*estadoconfiguracion=FCELESTE; break;}
+                            else if(*estadoconfiguracion==FCELESTE){*estadoconfiguracion=FNARANJA; break;}
+                            else if(*estadoconfiguracion==FNARANJA){*estadoconfiguracion=FROSA; break;}
+                            
+                        
+                        
                     } else if(ev.mouse.y>460&&ev.mouse.y<540){  //der, izq o medio
-                                if(ev.mouse.x<130){
-                                    ++teclaizq;     //hacia la izquierda
-                                } else if(ev.mouse.x>188){
-                                    ++teclader;         //la de la derecha
-                                } else{++teclamed;}     //la del medio
-                    } else if(ev.mouse.y>540&&ev.mouse.y<585){
-                        ++tecla2;           //tecla 2
-                    }
-                    else if(ev.mouse.y>585&&ev.mouse.y<630){
-                        ++tecla5;           //tecla 5
-                    }
-                    else if(ev.mouse.y>630&&ev.mouse.y<675){
-                        ++tecla8;           //tecla8
-                    }
-                    else if(ev.mouse.y>675&&ev.mouse.y<720){
-                        ++tecla0;         //tecla 0
+                                if(ev.mouse.x>130&&ev.mouse.x<188){
+                                    
+                                    
+                                    
+                                }     //la del medio
                     } 
                     
                 } else if(ev.mouse.x>208&&ev.mouse.x<288){      //pueden ser back,colgar,3,6,9 o numeral
-                    if(ev.mouse.y>450&&ev.mouse.y<490){
-                        ++teclaback;      //se presiono la tecla back
+                    if(ev.mouse.y>450&&ev.mouse.y<490){             //se presiono la tecla back
+                            if(*estadoconfiguracion==USUARIO||*estadoconfiguracion==COMPANIA||*estadoconfiguracion==MENSAJEPERSONAL||*estadoconfiguracion==TIPOESCRITURA||*estadoconfiguracion==FONDO){
+                               *pestado=MENU;       //lo anterior seria menu
+                               break;           
+                            } if(*estadoconfiguracion==INUSUARIO||*estadoconfiguracion==INCOMPANIA||*estadoconfiguracion==MPCOLOR||*estadoconfiguracion==MPTEXTO||*estadoconfiguracion==MPTAMANO||*estadoconfiguracion==TT9||*estadoconfiguracion==CLASICO||*estadoconfiguracion==TECLADONORMAL||*estadoconfiguracion==FBLANCO||*estadoconfiguracion==FROJO||*estadoconfiguracion==FAMARILLO||*estadoconfiguracion==FVERDE||*estadoconfiguracion==FMORADO||*estadoconfiguracion==FCELESTE||*estadoconfiguracion==FNARANJA||*estadoconfiguracion==FROSA){
+                                    *estadoconfiguracion=USUARIO;
+                                    break;
+                            }  
                     }
                     else if(ev.mouse.y>490&&ev.mouse.y<540){
-                        ++teclacolg;      //tecla roja,colgar
+                            *pestado=PANTALLAPRINCIPAL; //tecla roja,colgar
+                            break;  //sin importar nada salgo al menu
                     }
-                    else if(ev.mouse.y>540&&ev.mouse.y<585){
-                        ++tecla3;           //tecla 3
-                    }
-                    else if(ev.mouse.y>585&&ev.mouse.y<630){
-                        ++tecla6;           //tecla 6
-                    }
-                    else if(ev.mouse.y>630&&ev.mouse.y<675){
-                        ++tecla9;           //tecla9
-                    }
-                    else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x<268){
-                        ++teclanum;         //tecla asterisco
+                    
+                    
                 }
                 
                 }  
             }
         }
-    }
+    
     
 
-    printf("Seleccionar:%d,\n LLamar:%d\n,1:%d,\n4:%d,\n7:%d\n,asterisco:%d.\nArriba:%d\n,Abajo:%d,\nMedio:%d\n,izq%d\n,der%d\n,2:%d\n,5:%d\n,8:%d\n,0:%d\nback:%d\n,colgar:%d\n,3:%d\n,6:%d\n,9:%d\n,numeral:%d\n",teclaselect,teclallamar,tecla1,tecla4,tecla7,teclaast,teclaup,tecladown,teclamed,teclaizq,teclader,tecla2,tecla5,tecla8,tecla0,teclaback,teclacolg,tecla3,tecla6,tecla9,teclanum);
     return 0;
 }
 
-ALLEGRO_DISPLAY* getdisplay(int ancho, int alto){
+void mantenerconfiguracion(int * estadoconfiguracion,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla){
+    ALLEGRO_BITMAP* resetpantalla=NULL;
+    resetpantalla=al_create_bitmap(400,400);    //importante para poner en blanco la pantalla y empezar con mi estado
+    if(resetpantalla==NULL){
+        fprintf(stderr,"Error al abrir bitmap\n");
+        exit -1;
+    }
+    al_set_target_bitmap(resetpantalla);
+    al_clear_to_color(al_map_rgb(255,255,255));
     
-    ALLEGRO_DISPLAY* display=NULL;
+    ALLEGRO_FONT* fuente=NULL;
+    fuente=crearfuente(MEDIA);
+    if(fuente==NULL){fprintf(stderr,"No cargo la fuente\n");exit -1;}
     
-    display=al_create_display(ancho,alto);
-    if(display==NULL){
-        fprintf(stderr,"No se pudo inicializar el display\n"); 
-        return ERROR;
-    }    //inicializar display
+    cambiopantalla(display,pantalla);
+    al_draw_bitmap(resetpantalla,0,15,0);
+    cambiopantalla(display,pantalla);
     
-    return display;
-}
-
-ALLEGRO_EVENT_QUEUE* geteventqueue (void){
+    ALLEGRO_BITMAP* seleccionar=NULL;
+    seleccionar=al_create_bitmap(285,22);
+    if(seleccionar==NULL){
+        fprintf(stderr,"Error al abrir el bitmaaap\n");
+        exit -1;
+    }
+    al_set_target_bitmap(seleccionar);                  //al igual que en el del menu, señalizara lo apuntado
+    al_clear_to_color(al_map_rgb(150,150,150));
+    if(*estadoconfiguracion==USUARIO||*estadoconfiguracion==COMPANIA||*estadoconfiguracion==MENSAJEPERSONAL||*estadoconfiguracion==TIPOESCRITURA||*estadoconfiguracion==FONDO){
+    if(*estadoconfiguracion==USUARIO){
+        cambiopantalla(display,pantalla);
+        al_draw_bitmap(seleccionar,0,CONF1,0);
+        cambiopantalla(display,pantalla);
+    } else if(*estadoconfiguracion==COMPANIA){
+        cambiopantalla(display,pantalla);
+        al_draw_bitmap(seleccionar,0,CONF2,0);
+        cambiopantalla(display,pantalla);
+    }else if(*estadoconfiguracion==MENSAJEPERSONAL){
+        cambiopantalla(display,pantalla);               //pongo la "seleccion" en el lugar donde se eligio
+        al_draw_bitmap(seleccionar,0,CONF3,0);
+        cambiopantalla(display,pantalla);
+    }else if(*estadoconfiguracion==TIPOESCRITURA){
+        cambiopantalla(display,pantalla);
+        al_draw_bitmap(seleccionar,0,CONF4,0);
+        cambiopantalla(display,pantalla);
+    }else if(*estadoconfiguracion==FONDO){
+        cambiopantalla(display,pantalla);
+        al_draw_bitmap(seleccionar,0,CONF5,0);
+        cambiopantalla(display,pantalla);
+    }
+    cambiopantalla(display,pantalla);
+    al_draw_text(fuente,al_map_rgb(0,0,0),25,CONF1,ALLEGRO_ALIGN_LEFT,"Usuario");
+    al_draw_text(fuente,al_map_rgb(0,0,0),25,CONF2,ALLEGRO_ALIGN_LEFT,"Cambiar compania");
+    al_draw_text(fuente,al_map_rgb(0,0,0),25,CONF3,ALLEGRO_ALIGN_LEFT,"Mensaje Personal");
+    al_draw_text(fuente,al_map_rgb(0,0,0),25,CONF4,ALLEGRO_ALIGN_LEFT,"Tipo Escritura");
+    al_draw_text(fuente,al_map_rgb(0,0,0),25,CONF5,ALLEGRO_ALIGN_LEFT,"Fondo");
+    cambiopantalla(display,pantalla);
     
-    ALLEGRO_EVENT_QUEUE* eventos=NULL;
     
-    eventos=al_create_event_queue();
     
-    if(eventos==NULL){
-        fprintf(stderr,"No se inicializo el event queue.\n");
+    }else if(*estadoconfiguracion==INUSUARIO){
+        //aca la fucion para leer teclado ira que analice cual es el nombre del usuario
+    } else if(*estadoconfiguracion==INCOMPANIA||*estadoconfiguracion==CMOVISTAR||*estadoconfiguracion==CPERSONAL||*estadoconfiguracion==CCLARO||*estadoconfiguracion==CNEXTEL){
+            if(*estadoconfiguracion==CMOVISTAR){
+            cambiopantalla(display,pantalla);
+            al_draw_bitmap(seleccionar,0,CONF1,0);
+            cambiopantalla(display,pantalla);
+        } else if(*estadoconfiguracion==CPERSONAL){
+            cambiopantalla(display,pantalla);
+            al_draw_bitmap(seleccionar,0,CONF2,0);
+            cambiopantalla(display,pantalla);
+        }else if(*estadoconfiguracion==CCLARO){
+            cambiopantalla(display,pantalla);               //pongo la "seleccion" en el lugar donde se eligio
+            al_draw_bitmap(seleccionar,0,CONF3,0);
+            cambiopantalla(display,pantalla);
+        }else if(*estadoconfiguracion==CNEXTEL){
+            cambiopantalla(display,pantalla);
+            al_draw_bitmap(seleccionar,0,CONF4,0);
+            cambiopantalla(display,pantalla);
+        }
         
-        return ERROR;
+        cambiopantalla(display,pantalla);
+        al_draw_text(fuente,al_map_rgb(0,0,0),25,CONF1,ALLEGRO_ALIGN_LEFT,"Movistar");
+        al_draw_text(fuente,al_map_rgb(0,0,0),25,CONF2,ALLEGRO_ALIGN_LEFT,"Personal");
+        al_draw_text(fuente,al_map_rgb(0,0,0),25,CONF3,ALLEGRO_ALIGN_LEFT,"Claro");
+        al_draw_text(fuente,al_map_rgb(0,0,0),25,CONF4,ALLEGRO_ALIGN_LEFT,"Nextel");
+        cambiopantalla(display,pantalla);
         
-    }     //inicializo el event queue
+        
+    } else if(*estadoconfiguracion==TT9||*estadoconfiguracion==CLASICO||*estadoconfiguracion==TECLADONORMAL){
+        if(*estadoconfiguracion==TT9){
+            cambiopantalla(display,pantalla);
+            al_draw_bitmap(seleccionar,0,CONF1,0);
+            cambiopantalla(display,pantalla);
+        } else if(*estadoconfiguracion==CLASICO){
+            cambiopantalla(display,pantalla);
+            al_draw_bitmap(seleccionar,0,CONF2,0);
+            cambiopantalla(display,pantalla);
+        }else if(*estadoconfiguracion==TECLADONORMAL){
+            cambiopantalla(display,pantalla);               //pongo la "seleccion" en el lugar donde se eligio
+            al_draw_bitmap(seleccionar,0,CONF3,0);
+            cambiopantalla(display,pantalla);
+        }
+        
+        cambiopantalla(display,pantalla);
+        al_draw_text(fuente,al_map_rgb(0,0,0),25,CONF1,ALLEGRO_ALIGN_LEFT,"Texto Predictivo");
+        al_draw_text(fuente,al_map_rgb(0,0,0),25,CONF2,ALLEGRO_ALIGN_LEFT,"Texto Clasico");
+        al_draw_text(fuente,al_map_rgb(0,0,0),25,CONF3,ALLEGRO_ALIGN_LEFT,"Teclado Analogo");
+        cambiopantalla(display,pantalla);
+    }   else if(*estadoconfiguracion==FBLANCO||*estadoconfiguracion==FROJO||*estadoconfiguracion==FAMARILLO||*estadoconfiguracion==FVERDE||*estadoconfiguracion==FMORADO||*estadoconfiguracion==FCELESTE||*estadoconfiguracion==FNARANJA||*estadoconfiguracion==FROSA){
+        if(*estadoconfiguracion==FBLANCO){
+            cambiopantalla(display,pantalla);
+            al_draw_bitmap(seleccionar,0,20,0);
+            cambiopantalla(display,pantalla);
+        } else if(*estadoconfiguracion==FROJO){
+            cambiopantalla(display,pantalla);
+            al_draw_bitmap(seleccionar,0,45,0);
+            cambiopantalla(display,pantalla);
+        }else if(*estadoconfiguracion==FAMARILLO){
+            cambiopantalla(display,pantalla);               //pongo la "seleccion" en el lugar donde se eligio
+            al_draw_bitmap(seleccionar,0,70,0);
+            cambiopantalla(display,pantalla);
+        }else if(*estadoconfiguracion==FVERDE){
+            cambiopantalla(display,pantalla);
+            al_draw_bitmap(seleccionar,0,95,0);
+            cambiopantalla(display,pantalla);
+        }else if(*estadoconfiguracion==FMORADO){
+            cambiopantalla(display,pantalla);
+            al_draw_bitmap(seleccionar,0,120,0);
+            cambiopantalla(display,pantalla);
+        }else if(*estadoconfiguracion==FCELESTE){
+            cambiopantalla(display,pantalla);
+            al_draw_bitmap(seleccionar,0,145,0);
+            cambiopantalla(display,pantalla);
+        }else if(*estadoconfiguracion==FNARANJA){
+            cambiopantalla(display,pantalla);
+            al_draw_bitmap(seleccionar,0,170,0);
+            cambiopantalla(display,pantalla);
+        }else if(*estadoconfiguracion==FROSA){
+            cambiopantalla(display,pantalla);
+            al_draw_bitmap(seleccionar,0,195,0);
+            cambiopantalla(display,pantalla);
+        }
+        cambiopantalla(display,pantalla);
+        al_draw_text(fuente,al_map_rgb(0,0,0),25,20,ALLEGRO_ALIGN_LEFT,"Blanco");
+        al_draw_text(fuente,al_map_rgb(0,0,0),25,45,ALLEGRO_ALIGN_LEFT,"Rojo");
+        al_draw_text(fuente,al_map_rgb(0,0,0),25,70,ALLEGRO_ALIGN_LEFT,"Amarillo");
+        al_draw_text(fuente,al_map_rgb(0,0,0),25,95,ALLEGRO_ALIGN_LEFT,"Verde");
+        al_draw_text(fuente,al_map_rgb(0,0,0),25,120,ALLEGRO_ALIGN_LEFT,"Morado");
+        al_draw_text(fuente,al_map_rgb(0,0,0),25,145,ALLEGRO_ALIGN_LEFT,"Celeste");
+        al_draw_text(fuente,al_map_rgb(0,0,0),25,170,ALLEGRO_ALIGN_LEFT,"Naranja");
+        al_draw_text(fuente,al_map_rgb(0,0,0),25,195,ALLEGRO_ALIGN_LEFT,"Rosa");
     
-    return eventos;
-    
-}
-
-ALLEGRO_TIMER* gettimer (float periodo){
-    ALLEGRO_TIMER* timer=NULL;
-    
-    timer=al_create_timer(periodo);
-    if(timer==NULL){
-        fprintf(stderr,"No se pudo inicializar el timer\n");
-        return ERROR;
+        cambiopantalla(display,pantalla);
+        
+        
     }
     
-    return timer;
-    
-}
-
-
-
-
-int inicializar (void){
-    
-    if(!al_init()){
-        fprintf(stderr,"No se pudo inicializar Allegro\n");
-        return 1;
-    }
-    
-    al_install_keyboard();
-    al_install_mouse();     //instalo los perifericos
-    al_install_audio();
-    
-    al_init_font_addon();    // inicializo el font addon
     
     
     
-    if(!al_init_ttf_addon()){
-        fprintf(stderr,"No se inicializo el addon ttf.\n");
-        return -1;     
-        
-        
-    }// inicializo el True Type Font addon
+    cambiopantalla(display,pantalla);
+    al_draw_text(fuente,al_map_rgb(0,0,0),0,270,ALLEGRO_ALIGN_LEFT,"Seleccionar");         //creo boton menu o cualquier otro boton que quiera poner
+    al_draw_text(fuente,al_map_rgb(0,0,0),210,270,ALLEGRO_ALIGN_RIGHT,"Volver");
+    cambiopantalla(display,pantalla);
     
     
-    if(!al_init_acodec_addon()){
-        fprintf(stderr,"No se inicializo el addon de acodec\n");
-        return -1;
-    }           //es el addon de audio
-    
-    if(!al_init_image_addon()){
-        fprintf(stderr,"No se inicializo el addon de imagenes\n");
-        return -1;
-    }           //addon de imagenes
-    
-    
-    if(!al_init_primitives_addon()){
-        fprintf(stderr,"No se inicializo el addon de acodec\n");
-        return -1;
-    }       //por ultimo el de primitivas
-    
-    
-    
-    return 0;
+    al_destroy_font(fuente);
+    al_destroy_bitmap(seleccionar);
+    al_destroy_bitmap(resetpantalla);
 }
