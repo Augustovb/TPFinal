@@ -20,8 +20,9 @@
 #define PERSONAL    1
 #define CLARO       2
 #define NEXTEL      3
+
 #define PEQUENA     12
-#define MEDIA       22
+#define MEDIA       22          //tipos de letras
 #define GRANDE      36
 #define GIGANTE     72
 
@@ -40,20 +41,22 @@
 
 #define POS1            50
 #define POS2            100
-#define POS3            150
+#define POS3            150     //constantes para menu
 #define POS4            200
 
 
 #define NOCAMBIO    0
 #define ROJO        1
 #define AMARILLO    2
-#define VERDE       3
+#define VERDE       3             //colores
 #define MORADO      4
 #define CELESTE     5
 #define NARANJA     6
 #define ROSA        7
+
+
 #define T9              0
-#define MODOLIBRE       1
+#define MODOLIBRE       1       //tipo de teclado usado
 #define TECLADOANALOGO  2
 
 #define USUARIO             0
@@ -81,10 +84,22 @@
 #define CPERSONAL           22
 #define CCLARO              23
 #define CNEXTEL             24
+#define MPBLANCO            25   
+#define MPROJO              26
+#define MPAMARILLO          27
+#define MPVERDE             28
+#define MPMORADO            29
+#define MPCELESTE           30
+#define MPNARANJA           31
+#define MPROSA              32
+#define MPPEQUENA           33
+#define MMEDIA              34
+#define MGRANDE             35
+#define MGIGANTE            36
 
 #define CONF1   20
 #define CONF2   55
-#define CONF3   90
+#define CONF3   90          //tambien para mantener configuracion
 #define CONF4   125
 #define CONF5   160
 
