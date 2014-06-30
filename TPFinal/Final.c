@@ -101,7 +101,7 @@ int main(int argc, char** argv) {
             break;
         }
         if(estado==PERSONALIZAR){
-            mantenerconfiguracion(pestadoconfiguracion,display,pantalla);
+            mantenerconfiguracion(pestadoconfiguracion,display,pantalla,eventos,pestado,pmipantalla);
             analizartecladoconfiguracion(eventos,pestadoconfiguracion,pestado,pmipantalla);
             
             
@@ -115,4 +115,21 @@ int main(int argc, char** argv) {
     putuserdata(mipantalla);
     
     return (EXIT_SUCCESS);
+}
+
+
+
+
+
+void ponerarrayenpantalla (char* arreglo,int x,int y,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla) {
+    ALLEGRO_FONT* fuente=NULL;
+    fuente=crearfuente(MEDIA);
+    
+    
+    cambiopantalla(display,pantalla);
+    al_draw_text(fuente,al_map_rgb(0,0,0),x,y,ALLEGRO_ALIGN_LEFT,arreglo);
+    cambiopantalla(display,pantalla);
+            
+            
+    al_destroy_font(fuente);
 }

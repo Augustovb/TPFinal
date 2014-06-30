@@ -13,7 +13,9 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>ClassicTyping.c</itemPath>
       <itemPath>Final.c</itemPath>
+      <itemPath>FuncionesBasicas.c</itemPath>
       <itemPath>SourceFinal.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -54,9 +56,13 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
+      <item path="ClassicTyping.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="Final.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Final.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="FuncionesBasicas.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="SourceFinal.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -81,9 +87,13 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="ClassicTyping.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="Final.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Final.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="FuncionesBasicas.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="SourceFinal.c" ex="false" tool="0" flavor2="0">
       </item>

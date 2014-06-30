@@ -13,7 +13,7 @@
  * Definicion de constantes que serviran para diferenes motivos
  */
 #define ERROR           NULL
-#define FPS             60
+#define FPS             8
 #define PANTALLA_ANCHO  330
 #define PANTALLA_ALTO   765
 #define MOVISTAR    0
@@ -96,6 +96,7 @@
 #define MMEDIA              34
 #define MGRANDE             35
 #define MGIGANTE            36
+#define INGRESARTEXTO       37
 
 #define CONF1   20
 #define CONF2   55
@@ -125,33 +126,65 @@ typedef struct{
  * Definicion de funciones
  */
 
+
+
+
 /*Toma la data inicial del userdata*/
 INFOPANTALLA getuserdata(void);
+
+
+
 
 /*Pone la data principal*/
 void putuserdata (INFOPANTALLA mipantalla);
 
+
+
+
+
 /*Configura el mantenerconfiguracion*/
-void mantenerconfiguracion(int * estadoconfiguracion,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla);
+void mantenerconfiguracion(int * estadoconfiguracion,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla,ALLEGRO_EVENT_QUEUE* eventos, int* pestado,INFOPANTALLA* mipantalla);
+
+
+
 
 
 /*analiza el eclado estando en la configuracion*/
 int analizartecladoconfiguracion (ALLEGRO_EVENT_QUEUE* eventos,int* estadoconfiguracion, int* pestado,INFOPANTALLA* pantalla);
 
+
+
+
+
 /*Analiza el teclado cuando esta en el menu*/
 int analizartecladomenu (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,int* estadomenu);
+
+
+
 
 
 /*Mantiene el menu*/
 void mantenermenu(int* pestado, int* estadomenu,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla, INFOPANTALLA mipantalla);
 
 
+
+
+
+
 /*Es la forma de ver el teclado mientras se esta en este estado*/
 int analizartecladopantalla (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla);
 
 
+
+
+
+
 /*Cada vez que se vuelve al estado de pantalla, se actualiza segn los datos*/
 void mantenerpantalla(INFOPANTALLA datos,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla);
+
+
+
+
 
 
 /* La idea es que el usuario tenga cosas personalizables, que se guardaran en la estructura llamada pantalla, esta funcion
@@ -163,13 +196,25 @@ void iniciarpantalla(INFOPANTALLA datos, ALLEGRO_DISPLAY* display, ALLEGRO_BITMA
 
 
 
+
+
+
+
 /*Crea una fuente (del estilo predeterminado) del tamaño pedido*/
 ALLEGRO_FONT* crearfuente (int tamano);
+
+
+
+
 
 
 /*Inicializara los componentes de allegro*/
 
 int inicializar (void);
+
+
+
+
 
 /*Estas res funciones devuelven un puntero a estructuras de tipo allegro*/
 ALLEGRO_DISPLAY* getdisplay(int ancho, int alto);   //devuelve el display con el alto y ancho pedido
@@ -190,6 +235,10 @@ ALLEGRO_TIMER* gettimer (float periodo);             //un timer que genera event
 
 void cambiopantalla (ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla);
 
+
+
+
+
 /*      analizarteclado()
  *      Esta funcion se encarga de analizar, por medio del mouse, las teclas que se aprietan en el teclado virtual de el celular
  * 
@@ -199,6 +248,18 @@ int analizarteclado (ALLEGRO_EVENT_QUEUE* eventos);
 
 
 
+/*Escribe el contenido deun array en pantalla */
+void ponerarrayenpantalla (char* arreglo,int x,int y,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla);
+
+/*Funciones para manejo de tecladoclasico */
+int tecladoCLASSIC1 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLEGRO_DISPLAY* display, INFOPANTALLA* mipantalla, int* pestado, int* estadoconfiguracion);
+int tecladoCLASSIC2 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLEGRO_DISPLAY* display, INFOPANTALLA* mipantalla, int* pestado, int* estadoconfiguracion);
+int character_switcher_right (char *letra, char contador);
+int character_switcher_left (char *letra, char contador);
+char *user_types_classically (char *palabra, char tecla);
+void clearclassicarray (char *array);
+char *buscador_de_espacios (char *);
+void copy_2_lines (char texto[]);
 
 #endif	/* FINAL_H */
 
