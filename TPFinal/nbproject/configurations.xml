@@ -17,6 +17,7 @@
       <itemPath>Final.c</itemPath>
       <itemPath>FuncionesBasicas.c</itemPath>
       <itemPath>SourceFinal.c</itemPath>
+      <itemPath>Te9.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -66,6 +67,8 @@
       </item>
       <item path="SourceFinal.c" ex="false" tool="0" flavor2="0">
       </item>
+      <item path="Te9.c" ex="false" tool="0" flavor2="0">
+      </item>
     </conf>
     <conf name="Release" type="1">
       <toolsSet>
@@ -96,6 +99,8 @@
       <item path="FuncionesBasicas.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="SourceFinal.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Te9.c" ex="false" tool="0" flavor2="0">
       </item>
     </conf>
   </confs>

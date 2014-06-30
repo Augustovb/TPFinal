@@ -575,4 +575,15 @@ void cambiopantalla (ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla){
 }
 
 
-
+void ponerarrayenpantalla (char* arreglo,int x,int y,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla) {
+    ALLEGRO_FONT* fuente=NULL;
+    fuente=crearfuente(MEDIA);
+    
+    
+    cambiopantalla(display,pantalla);
+    al_draw_text(fuente,al_map_rgb(0,0,0),x,y,ALLEGRO_ALIGN_LEFT,arreglo);
+    cambiopantalla(display,pantalla);
+            
+            
+    al_destroy_font(fuente);
+}

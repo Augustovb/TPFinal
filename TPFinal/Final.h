@@ -13,7 +13,7 @@
  * Definicion de constantes que serviran para diferenes motivos
  */
 #define ERROR           NULL
-#define FPS             8
+#define FPS             20
 #define PANTALLA_ANCHO  330
 #define PANTALLA_ALTO   765
 #define MOVISTAR    0
@@ -196,7 +196,8 @@ void iniciarpantalla(INFOPANTALLA datos, ALLEGRO_DISPLAY* display, ALLEGRO_BITMA
 
 
 
-
+int tecladoCLASSIC3 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLEGRO_DISPLAY* display, INFOPANTALLA* mipantalla, int* pestado);
+void escribirmensaje(ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_DISPLAY* display,ALLEGRO_BITMAP* pantalla,int*pestado,int* pestadomensaje,INFOPANTALLA* mipantalla);
 
 
 
@@ -260,6 +261,82 @@ char *user_types_classically (char *palabra, char tecla);
 void clearclassicarray (char *array);
 char *buscador_de_espacios (char *);
 void copy_2_lines (char texto[]);
+
+
+/*Constantes del t9*/
+/*Constantes*/
+
+#define TRUE 1
+#define FALSE 0
+
+/*Prototipos*/
+
+/*Funcion principal de este archivo*/
+/*Funcion que funciona como un T9. En base a permutaciones de letras "adivina" las palabras del usuario*/
+void Te9 (void);
+
+
+int tecladoT9 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla,ALLEGRO_DISPLAY* display);
+int tecladoT92 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla,ALLEGRO_DISPLAY* display,INFOPANTALLA* mipantalla,int* pestadoconfiguracion);
+
+/*Funcion que inicializa el diccionario correspondiente, segun el idioma elegio*/
+void init_dictionary (void);
+
+
+/*Funcion que busca en el diccionario si la palabra existe o no*/
+/*Recibe un puntero de tipo FILE al diccionario y la palabra que se quiere buscar*/
+/*Por ahora solo muestra en pantalla que existe*/
+void checkfromdic (FILE *diccionario, char *);
+
+
+/*Funcion recursiva que analiza todas las permutaciones de letras posibles*/
+/*Recibe: puntero a donde esta la palabra, puntero a donde va a escribir la permutacion, puntero a diccionario*/
+/*Recibe un offset (debe ser 0, arreglar esto despues*/
+/*Recibe la cantidad de caracteres de la palabra a permutar (largo)*/
+/*Si hay coincidencia, lo muestra en pantalla*/
+void analisis_recursividad (char *destino, char *escritura, char offset, char largo, FILE*);
+
+
+/*Funcion que recibe los numeros que teclea el usuario (que son en realidad letras de palabras)*/
+/*Recibe un puntero a un arreglo donde dejara lo que el usuario tecleo*/
+/*Devuelve LA EXPANSION de lo que el usuario tecleo.
+Ejemplo: si se presiona un 2, el mismo se expande como abc2, para que queden todas las combinaciones posibles*/
+void usertypes (char);
+
+
+/*Funcion que analiza si la permutación devuelta por la funcion permutacion es valida o no (tiene numeros o no)*/
+/*Recibe un puntero al arreglo donde se aloja la permutacion*/
+/*Devuelve TRUE si la permutacion es valida o FALSE si es invalida*/
+int permutacionvalida (char *);
+
+
+/*Funcion que establece a que seccion del diccionario recurrir para buscar la palabra (su finalidad es optimizar el algoritmo)*/
+/*Recibe un puntero al array donde está la palabra que se quiere buscar*/
+/*Devuelve el puntero a file del diccionario correspondiente*/
+FILE *diccswitcher (char *);
+
+
+/*Funcion que limpia un array y lo deja todo en 0*/ 
+/*Recibe: puntero al inicio del array*/
+void cleararray (char *array);
+
+/*Funcion que divide un arreglo (que es una oracion) en arreglos mas pequeños que representan lineas, para mandar a ALLEGRO*/
+/*Recibe: el arreglo que se desea particionar*/
+/*Devuelve el texto partido en 5 arreglos diferentes*/
+void copy_T9_lines (char texto[]);
+
+/*Funcion que le permite al usuario elegir las distintas coincidencias del diccionario*/
+/*Recibe un puntero que sirve de cursor entre las opciones*/
+/*Devuelve la opcion escrita (en vivo) al arreglo de muestra*/
+void option_switcher (char *opcion);
+
+/*Funcion que se encarga de ir escribiendo la oracion, agregando espacios entre palabras*/
+char *escribiroracion (char *oracion);
+
+/*Funcion que borra palabras*/
+void borrarpalabra (void);
+
+
 
 #endif	/* FINAL_H */
 

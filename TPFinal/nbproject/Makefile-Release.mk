@@ -38,7 +38,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/ClassicTyping.o \
 	${OBJECTDIR}/Final.o \
 	${OBJECTDIR}/FuncionesBasicas.o \
-	${OBJECTDIR}/SourceFinal.o
+	${OBJECTDIR}/SourceFinal.o \
+	${OBJECTDIR}/Te9.o
 
 
 # C Compiler Flags
@@ -84,6 +85,11 @@ ${OBJECTDIR}/SourceFinal.o: SourceFinal.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/SourceFinal.o SourceFinal.c
+
+${OBJECTDIR}/Te9.o: Te9.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Te9.o Te9.c
 
 # Subprojects
 .build-subprojects:
