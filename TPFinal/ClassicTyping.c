@@ -9,14 +9,12 @@
 #include <allegro5/allegro_ttf.h>
 #include "Final.h"
 
-
 #define LINEA 17
-
-
-
+#define TRUE 1
+#define FALSE 0
+#define PUNTO 2
 
 char palabraingresada [LINEA*5+5];
-
 
 
 static char linea1 [18];
@@ -29,6 +27,8 @@ char *palabratecleada = palabraingresada;
 char contador1=0;
 
 char *cursor = palabraingresada;
+
+int estadotecla1 = TRUE;
 
 
 int tecladoCLASSIC1 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLEGRO_DISPLAY* display, INFOPANTALLA* mipantalla, int* pestado, int* estadoconfiguracion){
@@ -64,8 +64,22 @@ int tecladoCLASSIC1 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLE
                               //tecla verde, llamar
                     }
                     else if(ev.mouse.y>540&&ev.mouse.y<585){
+                                
+                                if (estadotecla1 == TRUE) {
                                 palabratecleada = user_types_classically (palabratecleada, '1');
-                                   //tecla 1
+                                estadotecla1 = FALSE; }
+                                 
+                                else {
+                                    if (palabratecleada != palabraingresada)
+                                        palabratecleada--;
+                                        *palabratecleada='.';
+                                        *(++palabratecleada)=' ';
+                                        palabratecleada++;
+                        
+                                        copy_T9_lines (palabraingresada);
+                                        puts (palabraingresada); 
+                                        estadotecla1 = TRUE;
+                                        } //tecla 1
                         
                     }
                     else if(ev.mouse.y>585&&ev.mouse.y<630){
@@ -77,7 +91,8 @@ int tecladoCLASSIC1 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLE
                                    //tecla7
                     }
                     else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x>50){
-                            *(--palabratecleada)=0;      //tecla asterisco
+                             if (--palabratecleada != palabraingresada)
+                                *(palabratecleada)= 0;      //tecla asterisco
                     }    
                 } else if(ev.mouse.x>110&&ev.mouse.x<208){  //son las teclas de la linea media que incluyen los centrales
                     //analizo primero lo de las "flechitas"y el boton del medio
@@ -186,7 +201,7 @@ int tecladoCLASSIC2 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLE
                 //aca iran los ifs que veran el ev.mouse.x y el ev.mouse.y
                 if(ev.mouse.x>30&&ev.mouse.x<110){      //pueden ser el select, llamar,1,4,7,*
                     if(ev.mouse.y>450&&ev.mouse.y<490){//se presiono la teclaselect
-                            *palabraingresada=*palabraingresada-0x20;
+                            *palabraingresada=*palabraingresada;
                             strcpy(mipantalla->mensajepersonal,palabraingresada); 
                             *estadoconfiguracion=FONDO;
                             break;
@@ -195,8 +210,22 @@ int tecladoCLASSIC2 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLE
                               //tecla verde, llamar
                     }
                     else if(ev.mouse.y>540&&ev.mouse.y<585){
-                                palabratecleada = user_types_classically (palabratecleada, '1');
-                                   //tecla 1
+
+                                if (estadotecla1 == TRUE) {
+                                    palabratecleada = user_types_classically (palabratecleada, '1');
+                                    estadotecla1 = FALSE; }
+                                 
+                                else {
+                                    if (palabratecleada != palabraingresada)
+                                        palabratecleada--;
+                                        *palabratecleada='.';
+                                        *(++palabratecleada)=' ';
+                                        palabratecleada++;
+                        
+                                        copy_T9_lines (palabraingresada);
+                                        puts (palabraingresada); 
+                                        estadotecla1 = TRUE;
+                                        } //tecla 1
                         
                     }
                     else if(ev.mouse.y>585&&ev.mouse.y<630){
@@ -208,134 +237,7 @@ int tecladoCLASSIC2 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLE
                                    //tecla7
                     }
                     else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x>50){
-                            *(--palabratecleada)=0;      //tecla asterisco
-                    }    
-                } else if(ev.mouse.x>110&&ev.mouse.x<208){  //son las teclas de la linea media que incluyen los centrales
-                    //analizo primero lo de las "flechitas"y el boton del medio
-                    if(ev.mouse.y>450&&ev.mouse.y<460){
-                              //tecla para arrriba
-                    } else if (ev.mouse.y>525&&ev.mouse.y<540){
-                            //teclaparaabajo
-                    } else if(ev.mouse.y>460&&ev.mouse.y<540){  //der, izq o medio
-                                if(ev.mouse.x<130){
-                                        
-                                         contador1 = character_switcher_left (palabratecleada, contador1);    //hacia la izquierda
-                                         
-                                         
-                                } else if(ev.mouse.x>188){
-
-                                         contador1 = character_switcher_right (palabratecleada, contador1);    //la de la derecha
-                                         
-                                         
-                                }else {*palabraingresada=*palabraingresada-0x20;
-                                    strcpy(mipantalla->mensajepersonal,palabraingresada); 
-                            *estadoconfiguracion=FONDO;
-                            break;}     //la del medio
-                    } else if(ev.mouse.y>540&&ev.mouse.y<585){                       
-                        palabratecleada = user_types_classically (palabratecleada, '2');                      
-                                   //tecla 2
-                    }
-                    else if(ev.mouse.y>585&&ev.mouse.y<630){
-                        palabratecleada = user_types_classically (palabratecleada, '5');
-                                   //tecla 5
-                    }
-                    else if(ev.mouse.y>630&&ev.mouse.y<675){
-                        palabratecleada = user_types_classically (palabratecleada, '8');
-                                   //tecla8
-                    }
-                    else if(ev.mouse.y>675&&ev.mouse.y<720){
-                        
-                        *(palabratecleada) = ' ';
-                        palabratecleada++;
-                        
-                                              
-                                 //tecla 0
-                    } 
-                    
-                } else if(ev.mouse.x>208&&ev.mouse.x<288){      //pueden ser back,colgar,3,6,9 o numeral
-                    if(ev.mouse.y>450&&ev.mouse.y<490){
-                            *estadoconfiguracion=USUARIO;  //se presiono la tecla back
-                            break;
-                    }
-                    else if(ev.mouse.y>490&&ev.mouse.y<540){
-                         *pestado=PANTALLAPRINCIPAL;     //tecla roja,colgar
-                         break;
-                    }
-                    else if(ev.mouse.y>540&&ev.mouse.y<585){
-                        palabratecleada = user_types_classically (palabratecleada, '3');
-                                   //tecla 3
-                    }
-                    else if(ev.mouse.y>585&&ev.mouse.y<630){
-                        palabratecleada = user_types_classically (palabratecleada, '6');
-                                   //tecla 6
-                    }
-                    else if(ev.mouse.y>630&&ev.mouse.y<675){
-                        palabratecleada = user_types_classically (palabratecleada, '9');
-                                   //tecla9
-                    }
-                    else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x<268){
-                               //tecla numeral
-                }
-                
-                }  
-            }
-        }
-        
-        copy_2_lines (palabraingresada);
-        
-
-    }
-    clearclassicarray(palabraingresada);
-}
-
-int tecladoCLASSIC3 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLEGRO_DISPLAY* display, INFOPANTALLA* mipantalla, int* pestado){
-        //de aca en adelante es simplemente la funcionde leerteclado que por comodidad no la pongo afuera
-    
-    
-    while(1){                   // esto es la funcion que lee de donde se clickeo
-        ALLEGRO_EVENT ev;
-        al_wait_for_event(eventos,&ev);
-        
-        if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) { 
-            exit (0);
-
-        } else if(ev.type==ALLEGRO_EVENT_TIMER){
-            ALLEGRO_BITMAP* mapa=NULL; mapa=al_create_bitmap(200,150); al_set_target_bitmap(mapa); al_clear_to_color(al_map_rgb(255,255,255));
-        cambiopantalla(display,pantalla);
-        al_draw_bitmap(mapa,0,100,0);
-        cambiopantalla(display,pantalla);
-        al_destroy_bitmap(mapa);
-        ponerarrayenpantalla(linea1,0,100,display,pantalla);
-        ponerarrayenpantalla(linea2,0,125,display,pantalla);
-        ponerarrayenpantalla(linea3,0,150,display,pantalla);
-        ponerarrayenpantalla(linea4,0,175,display,pantalla);
-        ponerarrayenpantalla(linea5,0,200,display,pantalla);
-        
-        } else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-            if(ev.mouse.button & 1){
-                //aca iran los ifs que veran el ev.mouse.x y el ev.mouse.y
-                if(ev.mouse.x>30&&ev.mouse.x<110){      //pueden ser el select, llamar,1,4,7,*
-                    if(ev.mouse.y>450&&ev.mouse.y<490){//se presiono la teclaselect
-                            
-                            break;
-                    }
-                    else if(ev.mouse.y>490&&ev.mouse.y<540){
-                              //tecla verde, llamar
-                    }
-                    else if(ev.mouse.y>540&&ev.mouse.y<585){
-                                palabratecleada = user_types_classically (palabratecleada, '1');
-                                   //tecla 1
-                        
-                    }
-                    else if(ev.mouse.y>585&&ev.mouse.y<630){
-                        palabratecleada = user_types_classically (palabratecleada, '4');
-                                   //tecla 4
-                    }
-                    else if(ev.mouse.y>630&&ev.mouse.y<675){
-                        palabratecleada = user_types_classically (palabratecleada, '7');
-                                   //tecla7
-                    }
-                    else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x>50){
+                            if (palabratecleada != palabraingresada)
                             *(--palabratecleada)=0;      //tecla asterisco
                     }    
                 } else if(ev.mouse.x>110&&ev.mouse.x<208){  //son las teclas de la linea media que incluyen los centrales
@@ -400,14 +302,174 @@ int tecladoCLASSIC3 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLE
                                    //tecla9
                     }
                     else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x<268){
-                               //tecla numeral
+                              
+                        
+                               if ((*(palabratecleada-1) >= 'a') && (*(palabratecleada-1) <= 'z'))
+                                        *(palabratecleada-1) = *(palabratecleada-1)-0x20;  //tecla numeral
+                                            
+                               else {
+
+                               if ((*(palabratecleada-1) >= 'A') && (*(palabratecleada-1) <= 'Z')) 
+                                        *(palabratecleada-1) = *(palabratecleada-1)+0x20; 
+                                    }
                 }
                 
                 }  
             }
         }
         
-        copy_2_lines2 (palabraingresada);
+        copy_2_lines (palabraingresada);
+        
+
+    }
+    clearclassicarray(palabraingresada);
+    palabratecleada=palabraingresada;
+}
+
+int tecladoCLASSIC3 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLEGRO_DISPLAY* display, INFOPANTALLA* mipantalla, int* pestado){
+        //de aca en adelante es simplemente la funcionde leerteclado que por comodidad no la pongo afuera
+    
+    
+    while(1){                   // esto es la funcion que lee de donde se clickeo
+        ALLEGRO_EVENT ev;
+        al_wait_for_event(eventos,&ev);
+        
+        if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) { 
+            exit (0);
+
+        } else if(ev.type==ALLEGRO_EVENT_TIMER){
+            ALLEGRO_BITMAP* mapa=NULL; mapa=al_create_bitmap(200,150); al_set_target_bitmap(mapa); al_clear_to_color(al_map_rgb(255,255,255));
+        cambiopantalla(display,pantalla);
+        al_draw_bitmap(mapa,0,100,0);
+        cambiopantalla(display,pantalla);
+        al_destroy_bitmap(mapa);
+        ponerarrayenpantalla(linea1,0,100,display,pantalla);
+        ponerarrayenpantalla(linea2,0,125,display,pantalla);
+        ponerarrayenpantalla(linea3,0,150,display,pantalla);
+        ponerarrayenpantalla(linea4,0,175,display,pantalla);
+        ponerarrayenpantalla(linea5,0,200,display,pantalla);
+        
+        } else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
+            if(ev.mouse.button & 1){
+                //aca iran los ifs que veran el ev.mouse.x y el ev.mouse.y
+                if(ev.mouse.x>30&&ev.mouse.x<110){      //pueden ser el select, llamar,1,4,7,*
+                    if(ev.mouse.y>450&&ev.mouse.y<490){//se presiono la teclaselect
+                            
+                            break;
+                    }
+                    else if(ev.mouse.y>490&&ev.mouse.y<540){
+                              //tecla verde, llamar
+                    }
+                    else if(ev.mouse.y>540&&ev.mouse.y<585){
+
+                                if (estadotecla1 == TRUE) {
+                                    palabratecleada = user_types_classically (palabratecleada, '1');
+                                    estadotecla1 = FALSE; }
+                                 
+                                else {
+                                    if (palabratecleada != palabraingresada)
+                                        palabratecleada--;
+                                        *palabratecleada='.';
+                                        *(++palabratecleada)=' ';
+                                        palabratecleada++;
+                        
+                                        copy_T9_lines (palabraingresada);
+                                        puts (palabraingresada); 
+                                        estadotecla1 = TRUE;
+                                        } //tecla 1
+                        
+                    }
+                    else if(ev.mouse.y>585&&ev.mouse.y<630){
+                        palabratecleada = user_types_classically (palabratecleada, '4');
+                                   //tecla 4
+                    }
+                    else if(ev.mouse.y>630&&ev.mouse.y<675){
+                        palabratecleada = user_types_classically (palabratecleada, '7');
+                                   //tecla7
+                    }
+                    else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x>50){
+                            if (palabratecleada != palabraingresada)
+                            *(--palabratecleada)=0;      //tecla asterisco
+                    }    
+                } else if(ev.mouse.x>110&&ev.mouse.x<208){  //son las teclas de la linea media que incluyen los centrales
+                    //analizo primero lo de las "flechitas"y el boton del medio
+                    if(ev.mouse.y>450&&ev.mouse.y<460){
+                              //tecla para arrriba
+                    } else if (ev.mouse.y>525&&ev.mouse.y<540){
+                            //teclaparaabajo
+                    } else if(ev.mouse.y>460&&ev.mouse.y<540){  //der, izq o medio
+                                if(ev.mouse.x<130){
+                                        
+                                         contador1 = character_switcher_left (palabratecleada, contador1);    //hacia la izquierda
+                                         
+                                         
+                                } else if(ev.mouse.x>188){
+
+                                         contador1 = character_switcher_right (palabratecleada, contador1);    //la de la derecha
+                                         
+                                         
+                                }else {
+                            break;}     //la del medio
+                    } else if(ev.mouse.y>540&&ev.mouse.y<585){                       
+                        palabratecleada = user_types_classically (palabratecleada, '2');                      
+                                   //tecla 2
+                    }
+                    else if(ev.mouse.y>585&&ev.mouse.y<630){
+                        palabratecleada = user_types_classically (palabratecleada, '5');
+                                   //tecla 5
+                    }
+                    else if(ev.mouse.y>630&&ev.mouse.y<675){
+                        palabratecleada = user_types_classically (palabratecleada, '8');
+                                   //tecla8
+                    }
+                    else if(ev.mouse.y>675&&ev.mouse.y<720){
+                        
+                        *(palabratecleada) = ' ';
+                        palabratecleada++;
+                        
+                                              
+                                 //tecla 0
+                    } 
+                    
+                } else if(ev.mouse.x>208&&ev.mouse.x<288){      //pueden ser back,colgar,3,6,9 o numeral
+                    if(ev.mouse.y>450&&ev.mouse.y<490){
+                            *pestado=PANTALLAPRINCIPAL;  //se presiono la tecla back
+                            break;
+                    }
+                    else if(ev.mouse.y>490&&ev.mouse.y<540){
+                         *pestado=PANTALLAPRINCIPAL;     //tecla roja,colgar
+                         break;
+                    }
+                    else if(ev.mouse.y>540&&ev.mouse.y<585){
+                        palabratecleada = user_types_classically (palabratecleada, '3');
+                                   //tecla 3
+                    }
+                    else if(ev.mouse.y>585&&ev.mouse.y<630){
+                        palabratecleada = user_types_classically (palabratecleada, '6');
+                                   //tecla 6
+                    }
+                    else if(ev.mouse.y>630&&ev.mouse.y<675){
+                        palabratecleada = user_types_classically (palabratecleada, '9');
+                                   //tecla9
+                    }
+                    else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x<268){
+                              
+                        
+                               if ((*(palabratecleada-1) >= 'a') && (*(palabratecleada-1) <= 'z'))
+                                        *(palabratecleada-1) = *(palabratecleada-1)-0x20;  //tecla numeral
+                                            
+                               else {
+
+                               if ((*(palabratecleada-1) >= 'A') && (*(palabratecleada-1) <= 'Z')) 
+                                        *(palabratecleada-1) = *(palabratecleada-1)+0x20; 
+                                    }
+                }
+                
+                }  
+            }
+        }
+        
+        copy_2_lines (palabraingresada);
         
 
     }
@@ -535,7 +597,7 @@ if((*(letra-1))=='9') {
 /*Devuelve el mismo puntero que recibio, pero incrementado en 1*/
 char *user_types_classically (char *palabra, char tecla)
 {
-
+    estadotecla1 = TRUE;
             if (tecla == '1') {
                *(palabra++)= '1';
                contador1=0;
@@ -669,54 +731,3 @@ void copy_2_lines (char texto[])
    
 }
 
-void copy_2_lines2(char texto[])
-{
-
-    unsigned int i=0;
-
-    while(i<17) {
-        linea1[i] = texto[i];
-        i++;
-    }
-    i=0;
-    linea1[0]=linea1[0]-0x20;
-    linea1[18] = 0;
-
-
-
-    while(i<17) {
-        linea2[i] = texto[i+17];
-        i++;
-    }
-    i=0;
-    linea2[18] = 0;
-
-
-
-    while(i<17) {
-        linea3[i] = texto[i+2*17];
-        i++;
-    }
-    i=0;
-    linea3[18] = 0;
-
-
-
-    while(i<17) {
-        linea4[i] = texto[i+3*17];
-        i++;
-    }
-    i=0;
-    linea4[18] = 0;
-
-
-
-    while(i<17) {
-        linea5[i] = texto[i+4*17];
-        i++;
-    }
-    i=0;
-    linea5[18] = 0;
-
-   
-}

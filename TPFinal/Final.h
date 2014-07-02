@@ -9,100 +9,6 @@
 #define	FINAL_H
 
 
-/*
- * Definicion de constantes que serviran para diferenes motivos
- */
-#define ERROR           NULL
-#define FPS             20
-#define PANTALLA_ANCHO  330
-#define PANTALLA_ALTO   765
-#define MOVISTAR    0
-#define PERSONAL    1
-#define CLARO       2
-#define NEXTEL      3
-
-#define PEQUENA     12
-#define MEDIA       22          //tipos de letras
-#define GRANDE      36
-#define GIGANTE     72
-
-#define PANTALLAPRINCIPAL   0
-#define MENU                1
-#define MENSAJE             2
-#define PERSONALIZAR        3
-#define JUEGO               4
-#define FINALIZAR           -1
-
-#define PVOLVER         0
-#define PMENSAJE        1
-#define PPERSONALIZAR   2       //estas variables tienen que ver con a donde se apuntara, cual sera el proximo estado
-#define PSTAY           3
-#define PJUEGO          4
-
-#define POS1            50
-#define POS2            100
-#define POS3            150     //constantes para menu
-#define POS4            200
-
-
-#define NOCAMBIO    0
-#define ROJO        1
-#define AMARILLO    2
-#define VERDE       3             //colores
-#define MORADO      4
-#define CELESTE     5
-#define NARANJA     6
-#define ROSA        7
-
-
-#define T9              0
-#define MODOLIBRE       1       //tipo de teclado usado
-#define TECLADOANALOGO  2
-
-#define USUARIO             0
-#define COMPANIA            1
-#define MENSAJEPERSONAL     2
-#define TIPOESCRITURA       3
-#define FONDO               4
-#define INUSUARIO           5
-#define INCOMPANIA          6
-#define MPCOLOR             7
-#define MPTEXTO             8           //estos defines son para manejar el estadoconfiguracion
-#define MPTAMANO            9
-#define TT9                 10
-#define CLASICO             11
-#define TECLADONORMAL       12
-#define FBLANCO             13   
-#define FROJO               14
-#define FAMARILLO           15
-#define FVERDE              16
-#define FMORADO             17
-#define FCELESTE            18
-#define FNARANJA            19
-#define FROSA               20
-#define CMOVISTAR           21
-#define CPERSONAL           22
-#define CCLARO              23
-#define CNEXTEL             24
-#define MPBLANCO            25   
-#define MPROJO              26
-#define MPAMARILLO          27
-#define MPVERDE             28
-#define MPMORADO            29
-#define MPCELESTE           30
-#define MPNARANJA           31
-#define MPROSA              32
-#define MPPEQUENA           33
-#define MMEDIA              34
-#define MGRANDE             35
-#define MGIGANTE            36
-#define INGRESARTEXTO       37
-
-#define CONF1   20
-#define CONF2   55
-#define CONF3   90          //tambien para mantener configuracion
-#define CONF4   125
-#define CONF5   160
 
 
 /*Estructura utilizada para chequear la data personalisable del usuario*/
@@ -197,7 +103,7 @@ void iniciarpantalla(INFOPANTALLA datos, ALLEGRO_DISPLAY* display, ALLEGRO_BITMA
 
 
 int tecladoCLASSIC3 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLEGRO_DISPLAY* display, INFOPANTALLA* mipantalla, int* pestado);
-void escribirmensaje(ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_DISPLAY* display,ALLEGRO_BITMAP* pantalla,int*pestado,int* pestadomensaje,INFOPANTALLA* mipantalla);
+void escribirmensaje(ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_DISPLAY* display,ALLEGRO_BITMAP* pantalla,int*pestado,INFOPANTALLA* mipantalla);
 
 
 
@@ -261,6 +167,7 @@ char *user_types_classically (char *palabra, char tecla);
 void clearclassicarray (char *array);
 char *buscador_de_espacios (char *);
 void copy_2_lines (char texto[]);
+
 
 
 /*Constantes del t9*/
@@ -335,6 +242,103 @@ char *escribiroracion (char *oracion);
 
 /*Funcion que borra palabras*/
 void borrarpalabra (void);
+
+
+
+/*
+ * Definicion de constantes que serviran para diferenes motivos
+ */
+#define ERROR           NULL
+#define FPS             20
+#define PANTALLA_ANCHO  330
+#define PANTALLA_ALTO   765
+#define MOVISTAR    0
+#define PERSONAL    1
+#define CLARO       2
+#define NEXTEL      3
+
+#define PEQUENA     12
+#define MEDIA       22          //tipos de letras
+#define GRANDE      36
+#define GIGANTE     72
+
+#define PANTALLAPRINCIPAL   0
+#define MENU                1
+#define MENSAJE             2
+#define PERSONALIZAR        3
+#define JUEGO               4
+#define FINALIZAR           -1
+
+#define PVOLVER         0
+#define PMENSAJE        1
+#define PPERSONALIZAR   2       //estas variables tienen que ver con a donde se apuntara, cual sera el proximo estado
+#define PSTAY           3
+#define PJUEGO          4
+
+#define POS1            50
+#define POS2            100
+#define POS3            150     //constantes para menu
+#define POS4            200
+
+
+#define NOCAMBIO    0
+#define ROJO        1
+#define AMARILLO    2
+#define VERDE       3             //colores
+#define MORADO      4
+#define CELESTE     5
+#define NARANJA     6
+#define ROSA        7
+
+
+#define T9              0
+#define MODOLIBRE       1       //tipo de teclado usado
+#define TECLADOANALOGO  2
+
+#define USUARIO             0
+#define COMPANIA            1
+#define MENSAJEPERSONAL     2
+#define TIPOESCRITURA       3
+#define FONDO               4
+#define INUSUARIO           5
+#define INCOMPANIA          6
+#define MPCOLOR             7
+#define MPTEXTO             8           //estos defines son para manejar el estadoconfiguracion
+#define MPTAMANO            9
+#define TT9                 10
+#define CLASICO             11
+#define TECLADONORMAL       12
+#define FBLANCO             13   
+#define FROJO               14
+#define FAMARILLO           15
+#define FVERDE              16
+#define FMORADO             17
+#define FCELESTE            18
+#define FNARANJA            19
+#define FROSA               20
+#define CMOVISTAR           21
+#define CPERSONAL           22
+#define CCLARO              23
+#define CNEXTEL             24
+#define MPBLANCO            25   
+#define MPROJO              26
+#define MPAMARILLO          27
+#define MPVERDE             28
+#define MPMORADO            29
+#define MPCELESTE           30
+#define MPNARANJA           31
+#define MPROSA              32
+#define MPPEQUENA           33
+#define MMEDIA              34
+#define MGRANDE             35
+#define MGIGANTE            36
+#define INGRESARTEXTO       37
+
+#define CONF1   20
+#define CONF2   55
+#define CONF3   90          //tambien para mantener configuracion
+#define CONF4   125
+#define CONF5   160
 
 
 

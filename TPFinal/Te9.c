@@ -30,17 +30,6 @@ char contadordecoincidencias = 0;          /*Contadores para switchers*/
 
 char oracioningresada [200];               /*Aqui se escribe la oracion que se va tecleando*/
 
-char ultimapalabra [50]; 
-char ultimapalabra1 [50] = "cúyo";
-char ultimapalabra2 [50] = "fútil";
-char ultimapalabra3 [50] = "ítem";
-char ultimapalabra4 [50] = "lúteo";         /*Ultimas palabras de los diccionarios*/
-char ultimapalabra5 [50] = "óxido";
-char ultimapalabra6 [50] = "súrtuba";
-char ultimapalabra7 [50] = "vórtice";
-char ultimapalabra8 [50] = "zúa";
-
-
 char linea1T9 [18];
 char linea2T9 [18];
 char linea3T9 [18];
@@ -61,6 +50,9 @@ char linea5T9 [18];
 
     char *tecleadocopia = tecleadousuario;      /*Punteros cursores*/
     char *oracion = oracioningresada;
+
+    char estadot9 = FALSE;
+    unsigned char acento = FALSE;
 
 /*FUNCIONES DEL T9*/
 
@@ -101,13 +93,23 @@ int tecladoT9 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla,ALLEGRO_DIS
                 //aca iran los ifs que veran el ev.mouse.x y el ev.mouse.y
                 if(ev.mouse.x>30&&ev.mouse.x<110){      //pueden ser el select, llamar,1,4,7,*
                     if(ev.mouse.y>450&&ev.mouse.y<490){
-                              //se presiono la teclaselect
+                             
+                             break;       //se presiono la teclaselect
                     }
                     else if(ev.mouse.y>490&&ev.mouse.y<540){
                               //tecla verde, llamar
                     }
                     else if(ev.mouse.y>540&&ev.mouse.y<585){
-                                   //tecla 1
+                        if (oracion != oracioningresada)
+                        oracion--;
+                        *oracion='.';
+                        *(++oracion)=' ';
+                        oracion++;
+                        
+                        copy_T9_lines (oracioningresada);
+                        puts (oracioningresada);
+
+                        //tecla 1
                         
                     }
                     else if(ev.mouse.y>585&&ev.mouse.y<630){
@@ -119,7 +121,7 @@ int tecladoT9 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla,ALLEGRO_DIS
                                    //tecla7
                     }
                     else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x>50){
-                                 borrarpalabra (); puts (oracioningresada); //tecla asterisco
+                                 borrarpalabra (); copy_T9_lines (oracioningresada); puts (oracioningresada); //tecla asterisco
                     }    
                 } else if(ev.mouse.x>110&&ev.mouse.x<208){  //son las teclas de la linea media que incluyen los centrales
                     //analizo primero lo de las "flechitas"y el boton del medio
@@ -146,20 +148,26 @@ int tecladoT9 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla,ALLEGRO_DIS
                                    //tecla8
                     }
                     else if(ev.mouse.y>675&&ev.mouse.y<720){
-                             Te9();                     
-                        tecleadocopia = tecleadousuario;
+
+                           if( estadot9 == TRUE)                                                                              
+                                Te9();
+                          
+                            tecleadocopia = tecleadousuario;
                             counter=0;
                             cleararray (muestra);
-                                 
+                            estadot9 = FALSE;
+                            option_switcher (elecciones);
+                            puts (muestra);
                                 //tecla 0
                     } 
                     
                 } else if(ev.mouse.x>208&&ev.mouse.x<288){      //pueden ser back,colgar,3,6,9 o numeral
                     if(ev.mouse.y>450&&ev.mouse.y<490){
-                              //se presiono la tecla back
+                        break;      //se presiono la tecla back
                     }
                     else if(ev.mouse.y>490&&ev.mouse.y<540){
                               //tecla roja,colgar
+                        break;
                     }
                     else if(ev.mouse.y>540&&ev.mouse.y<585){
                         usertypes ('3');
@@ -174,6 +182,16 @@ int tecladoT9 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla,ALLEGRO_DIS
                                    //tecla9
                     }
                     else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x<268){
+
+                        if (((*muestra) >= 'a') && (*(muestra) <= 'z'))
+                                        *(muestra) = *(muestra)-0x20;  //tecla numeral
+                                            
+                        else {
+
+                               if ((*(muestra) >= 'A') && (*(muestra) <= 'Z')) 
+                                        *(muestra) = *(muestra)+0x20; 
+                              }
+				puts (muestra);
                                 //tecla asterisco
                 }
                 
@@ -221,15 +239,25 @@ int tecladoT92 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla,ALLEGRO_DI
                 //aca iran los ifs que veran el ev.mouse.x y el ev.mouse.y
                 if(ev.mouse.x>30&&ev.mouse.x<110){      //pueden ser el select, llamar,1,4,7,*
                     if(ev.mouse.y>450&&ev.mouse.y<490){
-                            strcpy(mipantalla->mensajepersonal,oracioningresada);  //se presiono la teclaselect
-                            *pestadoconfiguracion=USUARIO;
-                            break;
+                            strcpy(mipantalla->mensajepersonal,oracioningresada); //se presiono la teclaselect
+                            *pestadoconfiguracion=USUARIO;                         
+                            break; 
                     }
                     else if(ev.mouse.y>490&&ev.mouse.y<540){
                               //tecla verde, llamar
                     }
                     else if(ev.mouse.y>540&&ev.mouse.y<585){
-                                   //tecla 1
+                        if (oracion != oracioningresada)
+                        oracion--;
+                        *oracion='.';
+                        *(++oracion)=' ';
+                        oracion++;
+                        
+                        copy_T9_lines (oracioningresada);
+                        puts (oracioningresada);
+                        
+
+                        //tecla 1
                         
                     }
                     else if(ev.mouse.y>585&&ev.mouse.y<630){
@@ -241,7 +269,7 @@ int tecladoT92 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla,ALLEGRO_DI
                                    //tecla7
                     }
                     else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x>50){
-                                 borrarpalabra (); puts (oracioningresada); //tecla asterisco
+                                 borrarpalabra (); copy_T9_lines (oracioningresada); puts (oracioningresada); //tecla asterisco
                     }    
                 } else if(ev.mouse.x>110&&ev.mouse.x<208){  //son las teclas de la linea media que incluyen los centrales
                     //analizo primero lo de las "flechitas"y el boton del medio
@@ -254,7 +282,7 @@ int tecladoT92 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla,ALLEGRO_DI
                                          //hacia la izquierda
                                 } else if(ev.mouse.x>188){
                                          option_switcher (elecciones); puts (muestra);   //la de la derecha
-                                }  else {  oracion = escribiroracion (oracion); copy_T9_lines (oracioningresada); puts (oracioningresada); }   //la del medio
+                                }  else {  oracion = escribiroracion (oracion); copy_T9_lines (oracioningresada); puts (oracioningresada);  }   //la del medio
                     } else if(ev.mouse.y>540&&ev.mouse.y<585){
                         usertypes ('2');
                                    //tecla 2
@@ -268,20 +296,26 @@ int tecladoT92 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla,ALLEGRO_DI
                                    //tecla8
                     }
                     else if(ev.mouse.y>675&&ev.mouse.y<720){
-                             Te9();                     
-                        tecleadocopia = tecleadousuario;
+
+                           if( estadot9 == TRUE)                                                                              
+                                Te9();
+                          
+                            tecleadocopia = tecleadousuario;
                             counter=0;
                             cleararray (muestra);
-                                 
+                            estadot9 = FALSE;
+                            option_switcher (elecciones);
+                            puts (muestra);
                                 //tecla 0
                     } 
                     
                 } else if(ev.mouse.x>208&&ev.mouse.x<288){      //pueden ser back,colgar,3,6,9 o numeral
                     if(ev.mouse.y>450&&ev.mouse.y<490){
-                              //se presiono la tecla back
+                            break;  //se presiono la tecla back
                     }
                     else if(ev.mouse.y>490&&ev.mouse.y<540){
-                              //tecla roja,colgar
+                           *pestadoconfiguracion=MENSAJEPERSONAL;  //tecla roja,colgar
+                           break;
                     }
                     else if(ev.mouse.y>540&&ev.mouse.y<585){
                         usertypes ('3');
@@ -296,6 +330,15 @@ int tecladoT92 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla,ALLEGRO_DI
                                    //tecla9
                     }
                     else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x<268){
+                        if (((*muestra) >= 'a') && (*(muestra) <= 'z'))
+                                        *(muestra) = *(muestra)-0x20;  //tecla numeral
+                                            
+                        else {
+
+                               if ((*(muestra) >= 'A') && (*(muestra) <= 'Z')) 
+                                        *(muestra) = *(muestra)+0x20; 
+                              }
+				puts (muestra);
                                 //tecla asterisco
                 }
                 
@@ -335,7 +378,7 @@ void Te9(void) {
 
 
 
-/*Funcion que inicializa el diccionario correspondiente, segun el idioma elegio*/
+/*Funcion que inicializa el diccionario correspondiente*/
 
 void init_dictionary (void)
 {
@@ -390,8 +433,8 @@ void init_dictionary (void)
 
 void checkfromdic (FILE *diccionario, char *palabra)
 {
-        char *buffertemporal = NULL;
-        unsigned char caracter=0;
+       char *buffertemporal = NULL;
+       int caracter=0;
         unsigned char k=1;
         
         while (k)      /*Loop hasta llegar al final del archivo*/ 
@@ -404,15 +447,16 @@ void checkfromdic (FILE *diccionario, char *palabra)
                       }
 
 
-                while (((caracter = fgetc (diccionario)) != ' ') && (caracter != '\n'))
+                while (((caracter = fgetc (diccionario)) != ' ') && (caracter != '\n') && (caracter!= EOF))
                     {
                         *(buffertemporal+i) = caracter;                             /*Junto letras hasta llegar a un espacio o a un enter. Busca las palabras. INEFICIENTE*/
                         i++;
 
                     }
-                
-                if (strcmp (ultimapalabra, buffertemporal)== 0)
+                if (caracter == EOF) 
                     k=0;
+                
+
 
                 if (strcmp (buffertemporal, palabra)==0) {
                     printf ("Se encontro coincidencia: %s\n", palabra);     /*Si encontro coicidencia con la palabra lo muestra en pantalla*/
@@ -467,7 +511,7 @@ Ejemplo: si se presiona un 2, el mismo se expande como abc2, para que queden tod
 
 void usertypes (char tecla)
 {
-    
+    estadot9 = TRUE;
             if (tecla == '2') {
                 *tecleadocopia = 'a';
                 *(++tecleadocopia) = 'b';
@@ -562,42 +606,42 @@ FILE *diccswitcher (char *palabra)
 {
 
     if ((*palabra == 'a') || (*palabra == 'b') || (*palabra == 'c')) {
-                    strcpy (ultimapalabra, ultimapalabra1);                 /*Segun entre a cada if, devuelve el puntero al diccionario correspondiente*/
+                                     
                     return diccabc;
         }
 
     if ((*palabra == 'd') || (*palabra == 'e') || (*palabra == 'f')) {
-                    strcpy (ultimapalabra, ultimapalabra2);
+                    
                     return diccdef;
         }
 
     if ((*palabra == 'g') || (*palabra == 'h') || (*palabra == 'i')) {
-                    strcpy (ultimapalabra, ultimapalabra3);
+                    
                     return diccghi;
         }
 
     if ((*palabra == 'j') || (*palabra == 'k') || (*palabra == 'l')) {
-                    strcpy (ultimapalabra, ultimapalabra4);
+                    
                     return diccjkl;
         }
 
     if ((*palabra == 'm') || (*palabra == 'n') || (*palabra == 'o')) {
-                    strcpy (ultimapalabra, ultimapalabra5);
+                    
                     return diccmno;
         }
 
     if ((*palabra == 'p') || (*palabra == 'q') || (*palabra == 'r') || (*palabra == 's')) {
-                    strcpy (ultimapalabra, ultimapalabra6);
+                    
                     return diccpqrs;
         }
 
     if ((*palabra == 't') || (*palabra == 'u') || (*palabra == 'v')) {
-                    strcpy (ultimapalabra, ultimapalabra7);
+                    
                     return dicctuv;
         }
 
     if ((*palabra == 'w') || (*palabra == 'x') || (*palabra == 'y') || (*palabra == 'z')) {
-                    strcpy (ultimapalabra, ultimapalabra8);
+                    
                     return diccwxyz;
         }
 
@@ -704,18 +748,22 @@ char *escribiroracion (char *oracion)
 void borrarpalabra (void)
 {
 
-    while ((oracion!=oracioningresada) && ((*(oracion) == ' ') || (*(oracion) == 0)))
+    while ((oracion!=oracioningresada) && ((*(oracion) == ' ') || (*(oracion) == 0)))       /*Comienzo a retroceder el cursor, "comiendo" espacios o ceros, hasta llegar a una letra*/
             oracion--;
 
-    while ((oracion != oracioningresada) && (*(--oracion) != ' ')) {
+    while ((oracion != oracioningresada) && (*(--oracion) != ' ')) {        /*Comienzo a borrar letras hasta encontrar un espacio, teniendo cuidado de no llegar al inicio del arreglo*/
             *(oracion) = 0;
         }
 
-   if (oracion == oracioningresada)
+    
+
+   if (oracion == oracioningresada)     /*Caso especial: si llega al final del arreglo deja un cero en ese espacio*/
     *oracion = 0;
 
-   else
+   else {
      oracion++;
-    
+     if (*oracion != 0)                 /*Caso especial: si la palabra es de una letra, este if previene errores*/
+        *oracion = 0;
+    } 
 
 }

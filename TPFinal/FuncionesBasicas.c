@@ -459,7 +459,6 @@ void putuserdata (INFOPANTALLA mipantalla){
     return ;
     
 }
-
 void iniciarpantalla(INFOPANTALLA datos, ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla){       //chequear que el mensaje personal no se pase de 140
     ALLEGRO_BITMAP* compania;
     ALLEGRO_FONT* fuente;
@@ -557,7 +556,6 @@ void iniciarpantalla(INFOPANTALLA datos, ALLEGRO_DISPLAY* display, ALLEGRO_BITMA
     
     
 }
-
 void cambiopantalla (ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla){
     static bool modificopantalla=false;
     if(!modificopantalla){
@@ -573,8 +571,6 @@ void cambiopantalla (ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla){
     }
     
 }
-
-
 void ponerarrayenpantalla (char* arreglo,int x,int y,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla) {
     ALLEGRO_FONT* fuente=NULL;
     fuente=crearfuente(MEDIA);

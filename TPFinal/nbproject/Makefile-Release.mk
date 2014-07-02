@@ -38,7 +38,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/ClassicTyping.o \
 	${OBJECTDIR}/Final.o \
 	${OBJECTDIR}/FuncionesBasicas.o \
-	${OBJECTDIR}/SourceFinal.o \
+	${OBJECTDIR}/Funciones_Especificas.o \
 	${OBJECTDIR}/Te9.o
 
 
@@ -81,10 +81,10 @@ ${OBJECTDIR}/FuncionesBasicas.o: FuncionesBasicas.c
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/FuncionesBasicas.o FuncionesBasicas.c
 
-${OBJECTDIR}/SourceFinal.o: SourceFinal.c 
+${OBJECTDIR}/Funciones_Especificas.o: Funciones_Especificas.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/SourceFinal.o SourceFinal.c
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Funciones_Especificas.o Funciones_Especificas.c
 
 ${OBJECTDIR}/Te9.o: Te9.c 
 	${MKDIR} -p ${OBJECTDIR}

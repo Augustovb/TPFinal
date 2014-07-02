@@ -38,7 +38,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/ClassicTyping.o \
 	${OBJECTDIR}/Final.o \
 	${OBJECTDIR}/FuncionesBasicas.o \
-	${OBJECTDIR}/SourceFinal.o \
+	${OBJECTDIR}/Funciones_Especificas.o \
 	${OBJECTDIR}/Te9.o
 
 
@@ -81,10 +81,10 @@ ${OBJECTDIR}/FuncionesBasicas.o: FuncionesBasicas.c
 	${RM} "$@.d"
 	$(COMPILE.c) -g `pkg-config --cflags allegro-5.0` `pkg-config --cflags allegro_acodec-5.0` `pkg-config --cflags allegro_audio-5.0` `pkg-config --cflags allegro_font-5.0` `pkg-config --cflags allegro_image-5.0` `pkg-config --cflags allegro_primitives-5.0` `pkg-config --cflags allegro_ttf-5.0`   -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/FuncionesBasicas.o FuncionesBasicas.c
 
-${OBJECTDIR}/SourceFinal.o: SourceFinal.c 
+${OBJECTDIR}/Funciones_Especificas.o: Funciones_Especificas.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.c) -g `pkg-config --cflags allegro-5.0` `pkg-config --cflags allegro_acodec-5.0` `pkg-config --cflags allegro_audio-5.0` `pkg-config --cflags allegro_font-5.0` `pkg-config --cflags allegro_image-5.0` `pkg-config --cflags allegro_primitives-5.0` `pkg-config --cflags allegro_ttf-5.0`   -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/SourceFinal.o SourceFinal.c
+	$(COMPILE.c) -g `pkg-config --cflags allegro-5.0` `pkg-config --cflags allegro_acodec-5.0` `pkg-config --cflags allegro_audio-5.0` `pkg-config --cflags allegro_font-5.0` `pkg-config --cflags allegro_image-5.0` `pkg-config --cflags allegro_primitives-5.0` `pkg-config --cflags allegro_ttf-5.0`   -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Funciones_Especificas.o Funciones_Especificas.c
 
 ${OBJECTDIR}/Te9.o: Te9.c 
 	${MKDIR} -p ${OBJECTDIR}

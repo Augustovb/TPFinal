@@ -28,8 +28,7 @@ int main(int argc, char** argv) {
     int estadoconfiguracion=USUARIO;
     int* pestadoconfiguracion=&estadoconfiguracion;
     int condiciones=0;      //por lo que me devuelva la funcion setear comienzo
-    int estadomensaje=0;
-    int* pestadomensaje=&estadomensaje;
+    
     
     if(inicializar()){
         return -1;
@@ -100,7 +99,7 @@ int main(int argc, char** argv) {
             analizartecladomenu(eventos,pestado,pestadomenu);
         }
         if(estado==MENSAJE){
-            escribirmensaje(eventos,display,pantalla,pestado,pestadomensaje,pmipantalla);
+            escribirmensaje(eventos,display,pantalla,pestado,pmipantalla);
         
         }
         if(estado==PERSONALIZAR){
@@ -117,68 +116,11 @@ int main(int argc, char** argv) {
     return (EXIT_SUCCESS);
 }
 
-#define ENVIANDOMENSAJE     0
-#define ESCRIBIENDOMENSAJE  1
 
 
 
 
-void escribirmensaje(ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_DISPLAY* display,ALLEGRO_BITMAP* pantalla,int*pestado,int* pestadomensaje,INFOPANTALLA* mipantalla){
-    ALLEGRO_FONT* fuente=NULL;
-    ALLEGRO_BITMAP* fondo=NULL;
-    fondo=al_create_bitmap(250,300); al_set_target_bitmap(fondo); al_clear_to_color(al_map_rgb(255,255,255));
-    
-    fuente=crearfuente(PEQUENA); if(fuente==NULL){fprintf(stderr,"Fallo al cargar la fuente en escribirmensaje()\n"); exit -1;}
-    cambiopantalla(display,pantalla);
-    al_draw_bitmap(fondo,0,15,0);
-    al_destroy_bitmap(fondo);
-    al_draw_text(fuente,al_map_rgb(0,0,0),0,15,ALLEGRO_ALIGN_LEFT,"Escriba su SMS:");
-    fuente=crearfuente(MEDIA);
-    al_draw_text(fuente,al_map_rgb(0,0,0),0,270,ALLEGRO_ALIGN_LEFT,"Enviar");
-    cambiopantalla(display,pantalla);
-    
-    if(mipantalla->tipoescritura==MODOLIBRE){
-            tecladoCLASSIC3(eventos,pantalla,display,mipantalla,pestado);
-    
-    } else if(mipantalla->tipoescritura==TECLADOANALOGO){
-          
-        cambiopantalla(display,pantalla);
-        al_draw_text(fuente,al_map_rgb(255,0,10),0,100,ALLEGRO_ALIGN_LEFT,"SU MENSAJE ESTA");
-        al_draw_text(fuente,al_map_rgb(255,0,10),0,125,ALLEGRO_ALIGN_LEFT,"SIENDO INTRODUCI-");
-        al_draw_text(fuente,al_map_rgb(255,0,10),0,150,ALLEGRO_ALIGN_LEFT,"DO MEDIANTE EL TE-");
-        al_draw_text(fuente,al_map_rgb(255,0,10),0,175,ALLEGRO_ALIGN_LEFT,"CLADO ANALOGO. (se");
-        al_draw_text(fuente,al_map_rgb(255,0,10),0,200,ALLEGRO_ALIGN_LEFT,"actualizara solo)");
-        cambiopantalla(display,pantalla);
-            
-        printf("\nINGRESE SU MENSAJE AQUI Y SERA CARGADO EN EL CELULAR\n");
-        printf("\nRECUERDE QUE ESTA INGRESANDO EL MENSAJE PERSONAL\n");
-        char personalmessage[140];
-        unsigned int i=0;
-        while(i<140){
-            personalmessage[i]=getchar();
-            
-            if(personalmessage[i]=='\n'){
-                 personalmessage[i]=0;
-                break;
-             }
-            ++i;
-            
-        }
-        strcpy(mipantalla->mensajepersonal,personalmessage);
-        cambiopantalla(display,pantalla);
-        al_draw_bitmap(fondo,0,15,0);
-        cambiopantalla(display,pantalla);
-        
-            
-        } else if(mipantalla->tipoescritura==T9){
-            tecladoT9(eventos,pantalla,display);
-        }
-    *pestado=PANTALLAPRINCIPAL;
-    
-   
-    al_destroy_font(fuente);
-    
-}
+
 
 
 

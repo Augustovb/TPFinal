@@ -1,0 +1,16 @@
+Manual para el uso correcto del iTba.
+
+
+Uso del T9.
+Para obtener una palabra, escriba las letras deseadas y luego aprete espacio. Cuando el algoritmo tome las palabras elegidas, se las mostrara en pantallay usted podra elegir mediante las teclas centrales.
+
+
+Uso del teclado clasico.
+Hemos notado que la manera clasica de escribir en los celulares se torna molesta al tener que esperar si se presiono devuelta el mismo numero o no.
+La alternativa que ofrece nuestro celular es la siguiente:
+Presione la tecla donde se encuentra su letra. Si en pantalla no sale la tecla que usted deseo presionar, simplemente aprete la flecha hacia la derecha hasta que la misma aparezca.
+
+
+Si usted desea retornar su celular a las condiciones de fabrica, elimine el archivo "configuracion.txt" de la carpeta donde usted tiene su ejecutable.
+
+
