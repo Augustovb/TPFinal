@@ -8,7 +8,7 @@
 #ifndef FINAL_H
 #define	FINAL_H
 
-
+#define IO 0x1F
 
 
 /*Estructura utilizada para chequear la data personalisable del usuario*/
@@ -117,7 +117,7 @@ ALLEGRO_FONT* crearfuente (int tamano);
 
 /*Inicializara los componentes de allegro*/
 
-int inicializar (void);
+int inicializar (struct ftdi_context ftdic);
 
 
 

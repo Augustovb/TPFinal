@@ -9,6 +9,8 @@
 #include <allegro5/allegro_ttf.h>
 #include <string.h>
 #include "Final.h"
+#include <ftdi.h>
+#include <unistd.h>
 
 
 int analizartecladoconfiguracion (ALLEGRO_EVENT_QUEUE* eventos,int * estadoconfiguracion, int* pestado, INFOPANTALLA* pantalla){
@@ -1182,11 +1184,10 @@ int analizartecladomenu (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,int* estadome
 }
 
 
-void mantenerlinterna(int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla, INFOPANTALLA mipantalla);
-int analizartecladolinterna(ALLEGRO_EVENT_QUEUE* eventos, int* pestado);
 
 
-void mantenerlinterna(int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla, INFOPANTALLA mipantalla){
+void mantenerlinterna(int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla, INFOPANTALLA mipantalla,struct ftdi_context ftdic);
+void mantenerlinterna(int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla, INFOPANTALLA mipantalla,struct ftdi_context ftdic){
     
     ALLEGRO_FONT* fuente;
     fuente=crearfuente(MEDIA);
@@ -1208,6 +1209,17 @@ void mantenerlinterna(int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pan
         exit -1;
     }
     
+    char data;
+                                    //yo pondre como linterna el bit 0
+    data=getFTDIdata(ftdic);
+    
+    data=data & 0xFE;
+    
+    if(data==0x00){
+        al_draw_bitmap(apagado,0,0,0);    
+    } else {
+        al_draw_bitmap(prendido,0,0,0);
+    }
     
     
     
@@ -1218,4 +1230,96 @@ void mantenerlinterna(int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pan
     al_destroy_bitmap(apagado);
     al_destroy_bitmap(fondo);
     al_destroy_font(fuente);
+}
+
+
+int analizartecladolinterna(ALLEGRO_EVENT_QUEUE* eventos, int* pestado);
+
+
+int analizartecladolinterna(ALLEGRO_EVENT_QUEUE* eventos, int* pestado){
+    
+            //de aca en adelante es simplemente la funcionde leerteclado que por comodidad no la pongo afuera
+    char infoFtdi;
+    
+    while(1){                   // esto es la funcion que lee de donde se clickeo
+        ALLEGRO_EVENT ev;
+        al_wait_for_event(eventos,&ev);
+        
+        if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+            break;
+        } else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
+            if(ev.mouse.button & 1){
+                //aca iran los ifs que veran el ev.mouse.x y el ev.mouse.y
+                if(ev.mouse.x>30&&ev.mouse.x<110){      //pueden ser el select, llamar,1,4,7,*
+                    if(ev.mouse.y>450&&ev.mouse.y<490){
+                              //se presiono la teclaselect
+                    }
+                    else if(ev.mouse.y>490&&ev.mouse.y<540){
+                              //tecla verde, llamar
+                    }
+                    else if(ev.mouse.y>540&&ev.mouse.y<585){
+                                  //tecla 1
+                    }
+                    else if(ev.mouse.y>585&&ev.mouse.y<630){
+                                   //tecla 4
+                    }
+                    else if(ev.mouse.y>630&&ev.mouse.y<675){
+                                   //tecla7
+                    }
+                    else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x>50){
+                                //tecla asterisco
+                    }    
+                } else if(ev.mouse.x>110&&ev.mouse.x<208){  //son las teclas de la linea media que incluyen los centrales
+                    //analizo primero lo de las "flechitas"y el boton del medio
+                    if(ev.mouse.y>450&&ev.mouse.y<460){
+                              //tecla para arrriba
+                    } else if (ev.mouse.y>525&&ev.mouse.y<540){
+                            //teclaparaabajo
+                    } else if(ev.mouse.y>460&&ev.mouse.y<540){  //der, izq o medio
+                                if(ev.mouse.x<130){
+                                         //hacia la izquierda
+                                } else if(ev.mouse.x>188){
+                                             //la de la derecha
+                                } else{}     //la del medio
+                    } else if(ev.mouse.y>540&&ev.mouse.y<585){
+                                   //tecla 2
+                    }
+                    else if(ev.mouse.y>585&&ev.mouse.y<630){
+                                   //tecla 5
+                    }
+                    else if(ev.mouse.y>630&&ev.mouse.y<675){
+                                   //tecla8
+                    }
+                    else if(ev.mouse.y>675&&ev.mouse.y<720){
+                                 //tecla 0
+                    } 
+                    
+                } else if(ev.mouse.x>208&&ev.mouse.x<288){      //pueden ser back,colgar,3,6,9 o numeral
+                    if(ev.mouse.y>450&&ev.mouse.y<490){
+                              //se presiono la tecla back
+                    }
+                    else if(ev.mouse.y>490&&ev.mouse.y<540){
+                             //tecla roja,colgar
+                    }
+                    else if(ev.mouse.y>540&&ev.mouse.y<585){
+                                   //tecla 3
+                    }
+                    else if(ev.mouse.y>585&&ev.mouse.y<630){
+                                   //tecla 6
+                    }
+                    else if(ev.mouse.y>630&&ev.mouse.y<675){
+                                   //tecla9
+                    }
+                    else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x<268){
+                                 //tecla asterisco
+                }
+                
+                }  
+            }
+        }
+    }
+    
+
+    return 0;
+    
 }

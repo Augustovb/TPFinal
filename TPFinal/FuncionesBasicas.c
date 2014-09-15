@@ -10,6 +10,8 @@
 #include <allegro5/allegro_ttf.h>
 #include <string.h>
 #include "Final.h"
+#include <ftdi.h>
+#include <unistd.h>
 
 
 int analizarteclado (ALLEGRO_EVENT_QUEUE* eventos){
@@ -152,7 +154,7 @@ ALLEGRO_FONT* crearfuente (int tamano){
     return fuente;
     
 }
-int inicializar (void){
+int inicializar (struct ftdi_context ftdic){
     
     if(!al_init()){
         fprintf(stderr,"No se pudo inicializar Allegro\n");
@@ -191,7 +193,30 @@ int inicializar (void){
         return -1;
     }       //por ultimo el de primitivas
     
+   
     
+    
+    //Aca empieza la inicializacion ftdiezca
+                    int ret;
+    
+                    /* Initialize context for subsequent function calls */
+
+                    ftdi_init(&ftdic);
+
+                    /* Open FTDI device*/
+
+                    if(ftdi_usb_open(&ftdic, 0x0403, 0x6001) < 0) {
+                        puts("Can't open device");
+    
+                    }
+
+                    if ((ret = ftdi_set_bitmode(&ftdic, IO, 0x01)) < 0) {		/*Elegimos que puertos leer y que escribir*/
+                            fprintf(stderr, "unable to set bitmode\n");
+                        
+                     }
+    
+  
+    //Aca termina
     
     return 0;
 }

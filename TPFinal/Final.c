@@ -17,6 +17,8 @@
 #include <allegro5/allegro_ttf.h>
 #include <string.h>
 #include "Final.h"
+#include <ftdi.h>
+#include <unistd.h>
 /*
  *Main
  */
@@ -28,9 +30,10 @@ int main(int argc, char** argv) {
     int estadoconfiguracion=USUARIO;
     int* pestadoconfiguracion=&estadoconfiguracion;
     int condiciones=0;      //por lo que me devuelva la funcion setear comienzo
+    struct ftdi_context ftdic;
     
     
-    if(inicializar()){
+    if(inicializar(ftdic)){
         return -1;
     }
     
