@@ -266,7 +266,8 @@ void borrarpalabra (void);
 #define MENU                1
 #define MENSAJE             2
 #define PERSONALIZAR        3
-#define JUEGO               4
+#define LINTERNA              4
+#define FIESTA 5
 #define FINALIZAR           -1
 
 #define PVOLVER         0

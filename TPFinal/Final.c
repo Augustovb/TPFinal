@@ -106,6 +106,14 @@ int main(int argc, char** argv) {
             mantenerconfiguracion(pestadoconfiguracion,display,pantalla,eventos,pestado,pmipantalla);
             analizartecladoconfiguracion(eventos,pestadoconfiguracion,pestado,pmipantalla);        
         }
+        if(estado== LINTERNA){
+            printf("Entraste a interna\n");
+            estado=MENU;
+        }
+        if(estado==FIESTA){
+            printf("Entraste a fiesta\n");
+            estado=MENU;
+        }
         
         
         

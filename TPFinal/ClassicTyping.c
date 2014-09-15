@@ -30,6 +30,10 @@ char *cursor = palabraingresada;
 
 int estadotecla1 = TRUE;
 
+unsigned char puntuacion[] = {',','.','!','@','#','$','%','^','&','*','?','/','<','>','1','0'};
+unsigned char contpuntuacion=0;
+unsigned char signo = FALSE;
+
 
 int tecladoCLASSIC1 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLEGRO_DISPLAY* display, INFOPANTALLA* mipantalla, int* pestado, int* estadoconfiguracion){
         //de aca en adelante es simplemente la funcionde leerteclado que por comodidad no la pongo afuera
@@ -211,21 +215,14 @@ int tecladoCLASSIC2 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLE
                     }
                     else if(ev.mouse.y>540&&ev.mouse.y<585){
 
-                                if (estadotecla1 == TRUE) {
-                                    palabratecleada = user_types_classically (palabratecleada, '1');
-                                    estadotecla1 = FALSE; }
-                                 
-                                else {
-                                    if (palabratecleada != palabraingresada)
-                                        palabratecleada--;
-                                        *palabratecleada='.';
-                                        *(++palabratecleada)=' ';
-                                        palabratecleada++;
-                        
-                                        copy_T9_lines (palabraingresada);
-                                        puts (palabraingresada); 
-                                        estadotecla1 = TRUE;
-                                        } //tecla 1
+                                if (contpuntuacion < (sizeof(puntuacion)/sizeof(puntuacion[0])))   
+                                    contpuntuacion++;
+                                else{
+                                    contpuntuacion=0;
+                                    }
+                                    
+                                    *(palabratecleada) = puntuacion[contpuntuacion];   
+                                    signo = TRUE;
                         
                     }
                     else if(ev.mouse.y>585&&ev.mouse.y<630){
@@ -273,6 +270,7 @@ int tecladoCLASSIC2 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLE
                     }
                     else if(ev.mouse.y>675&&ev.mouse.y<720){
                         
+                        if (signo == TRUE) {signo = FALSE; palabratecleada++;}
                         *(palabratecleada) = ' ';
                         palabratecleada++;
                         
@@ -362,21 +360,14 @@ int tecladoCLASSIC3 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLE
                     }
                     else if(ev.mouse.y>540&&ev.mouse.y<585){
 
-                                if (estadotecla1 == TRUE) {
-                                    palabratecleada = user_types_classically (palabratecleada, '1');
-                                    estadotecla1 = FALSE; }
-                                 
-                                else {
-                                    if (palabratecleada != palabraingresada)
-                                        palabratecleada--;
-                                        *palabratecleada='.';
-                                        *(++palabratecleada)=' ';
-                                        palabratecleada++;
-                        
-                                        copy_T9_lines (palabraingresada);
-                                        puts (palabraingresada); 
-                                        estadotecla1 = TRUE;
-                                        } //tecla 1
+                                if (contpuntuacion < (sizeof(puntuacion)/sizeof(puntuacion[0])))   
+                                    contpuntuacion++;
+                                else{
+                                    contpuntuacion=0;
+                                    }
+                                    
+                                    *(palabratecleada) = puntuacion[contpuntuacion];   
+                                    signo = TRUE;
                         
                     }
                     else if(ev.mouse.y>585&&ev.mouse.y<630){
@@ -424,6 +415,7 @@ int tecladoCLASSIC3 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLE
                     }
                     else if(ev.mouse.y>675&&ev.mouse.y<720){
                         
+                        if (signo == TRUE) {signo = FALSE; palabratecleada++;}
                         *(palabratecleada) = ' ';
                         palabratecleada++;
                         
@@ -597,6 +589,7 @@ if((*(letra-1))=='9') {
 /*Devuelve el mismo puntero que recibio, pero incrementado en 1*/
 char *user_types_classically (char *palabra, char tecla)
 {
+    if (signo == TRUE) {signo = FALSE; palabra++;}
     estadotecla1 = TRUE;
             if (tecla == '1') {
                *(palabra++)= '1';

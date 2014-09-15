@@ -603,7 +603,7 @@ void mantenerconfiguracion(int * estadoconfiguracion,ALLEGRO_DISPLAY* display, A
             cambiopantalla(display,pantalla);
         }
         cambiopantalla(display,pantalla);
-        al_draw_text(fuente,al_map_rgb(0,0,0),25,20,ALLEGRO_ALIGN_LEFT,"Blanco");
+        al_draw_text(fuente,al_map_rgb(0,0,0),25,20,ALLEGRO_ALIGN_LEFT,"Negro");
         al_draw_text(fuente,al_map_rgb(0,0,0),25,45,ALLEGRO_ALIGN_LEFT,"Rojo");
         al_draw_text(fuente,al_map_rgb(0,0,0),25,70,ALLEGRO_ALIGN_LEFT,"Amarillo");
         al_draw_text(fuente,al_map_rgb(0,0,0),25,95,ALLEGRO_ALIGN_LEFT,"Verde");
@@ -998,6 +998,9 @@ int analizartecladopantalla (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,ALLEGRO_D
 
     return 0;
 }
+
+
+
 void mantenermenu(int* pestado, int* estadomenu,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla,INFOPANTALLA mipantalla){
     
     ALLEGRO_FONT* fuente;
@@ -1012,10 +1015,14 @@ void mantenermenu(int* pestado, int* estadomenu,ALLEGRO_DISPLAY* display, ALLEGR
     cambiopantalla(display,pantalla);
     
     ALLEGRO_BITMAP* mensaje=NULL;
+    ALLEGRO_BITMAP* linterna=NULL;
+    ALLEGRO_BITMAP* fiesta=NULL;
     ALLEGRO_BITMAP* personalizar=NULL;       //seran las fotos que usaran como "iconos"
     mensaje=al_load_bitmap("mensaje.png");
     personalizar=al_load_bitmap("personalizar.png");
-    if(mensaje==NULL||personalizar==NULL){
+    linterna=al_load_bitmap("linterna.png");
+    fiesta=al_load_bitmap("fiesta.png");
+    if(mensaje==NULL||personalizar==NULL||linterna==NULL||fiesta==NULL){
         fprintf(stderr,"Error al cargar imagen");
         exit -1;
     }
@@ -1047,6 +1054,10 @@ void mantenermenu(int* pestado, int* estadomenu,ALLEGRO_DISPLAY* display, ALLEGR
     al_draw_bitmap(mensaje,-3,POS1-4,0);
     al_draw_text(fuente,al_map_rgb(0,0,0),25,POS2,ALLEGRO_ALIGN_LEFT,"Configuración");
     al_draw_bitmap(personalizar,0,POS2,0);
+    al_draw_text(fuente,al_map_rgb(0,0,0),25,POS3,ALLEGRO_ALIGN_LEFT,"Linterna");
+    al_draw_bitmap(linterna,-4,POS3-3,0);
+    al_draw_text(fuente,al_map_rgb(0,0,0),25,POS4,ALLEGRO_ALIGN_LEFT,"Fiesta");
+    al_draw_bitmap(fiesta,-5,POS4-5,0);
     cambiopantalla(display,pantalla);
     
     
@@ -1055,12 +1066,15 @@ void mantenermenu(int* pestado, int* estadomenu,ALLEGRO_DISPLAY* display, ALLEGR
     al_draw_text(fuente,al_map_rgb(0,0,0),210,270,ALLEGRO_ALIGN_RIGHT,"Volver");
     cambiopantalla(display,pantalla);
     
+    al_destroy_bitmap(fiesta);
+    al_destroy_bitmap(linterna);
     al_destroy_bitmap(seleccion);
     al_destroy_bitmap(fondo);
     al_destroy_font(fuente);
     al_destroy_bitmap(mensaje);
     al_destroy_bitmap(personalizar);
 }   //debo setear cuando vuelva en estadomenu a pos1
+
 int analizartecladomenu (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,int* estadomenu){
         //de aca en adelante es simplemente la funcionde leerteclado que por comodidad no la pongo afuera
     
@@ -1079,6 +1093,9 @@ int analizartecladomenu (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,int* estadome
                     if(ev.mouse.y>450&&ev.mouse.y<490){
                             if(*estadomenu==POS1){*pestado=MENSAJE;break;}
                             else if(*estadomenu==POS2){*pestado=PERSONALIZAR;break;}  //se presiono la teclaselect
+                            else if(*estadomenu==POS3){*pestado=LINTERNA;break;}
+                            else if(*estadomenu==POS4){*pestado=FIESTA;break;}
+
                     }
                     else if(ev.mouse.y>490&&ev.mouse.y<540){
                               //tecla verde, llamar
@@ -1100,11 +1117,15 @@ int analizartecladomenu (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,int* estadome
                     if(ev.mouse.y>450&&ev.mouse.y<460){
                             if(*estadomenu==POS1){continue;}  //tecla para arrriba
                             if(*estadomenu==POS2){*estadomenu=POS1; break;}     //(subo)
+                            if(*estadomenu==POS3){*estadomenu=POS2; break;}
+                            if(*estadomenu==POS4){*estadomenu=POS3; break;}
                             
                             
                     } else if (ev.mouse.y>525&&ev.mouse.y<540){
                             if(*estadomenu==POS1){*estadomenu=POS2; break;}//teclaparaabajo
-                            if(*estadomenu==POS2){continue;}
+                            if(*estadomenu==POS2){*estadomenu=POS3; break;}
+                            if(*estadomenu==POS3){*estadomenu=POS4; break;}
+                            if(*estadomenu==POS4){continue;}
                     } else if(ev.mouse.y>460&&ev.mouse.y<540){  //der, izq o medio
                                 if(ev.mouse.x<130){
                                          //hacia la izquierda
@@ -1113,6 +1134,8 @@ int analizartecladomenu (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,int* estadome
                                 } else{
                                     if(*estadomenu==POS1){*pestado=MENSAJE;break;}
                                     else if(*estadomenu==POS2){*pestado=PERSONALIZAR;break;}
+                                    else if(*estadomenu==POS3){*pestado=LINTERNA;break;}
+                                    else if(*estadomenu==POS4){*pestado=FIESTA;break;}
                                 }     //la del medio
                     } else if(ev.mouse.y>540&&ev.mouse.y<585){
                                    //tecla 2
@@ -1156,4 +1179,43 @@ int analizartecladomenu (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,int* estadome
     
 
     return 0;
+}
+
+
+void mantenerlinterna(int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla, INFOPANTALLA mipantalla);
+int analizartecladolinterna(ALLEGRO_EVENT_QUEUE* eventos, int* pestado);
+
+
+void mantenerlinterna(int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla, INFOPANTALLA mipantalla){
+    
+    ALLEGRO_FONT* fuente;
+    fuente=crearfuente(MEDIA);
+    ALLEGRO_BITMAP* prendido=NULL;
+    ALLEGRO_BITMAP* apagado=NULL;
+    ALLEGRO_BITMAP* fondo;
+    fondo=al_create_bitmap(285,300);
+    al_set_target_bitmap(fondo);
+    al_clear_to_color(al_map_rgb(255,255,255));
+    cambiopantalla(display,pantalla);
+    al_draw_bitmap(fondo,0,15,0);
+    cambiopantalla(display,pantalla);
+    
+    
+    prendido=al_load_bitmap("prendido.png");
+    apagado=al_load_bitmap("apagado.png");
+    if(prendido==NULL||apagado==NULL){
+        fprintf(stderr,"Error al cargar imagen");
+        exit -1;
+    }
+    
+    
+    
+    
+    
+    
+    
+    al_destroy_bitmap(prendido);
+    al_destroy_bitmap(apagado);
+    al_destroy_bitmap(fondo);
+    al_destroy_font(fuente);
 }

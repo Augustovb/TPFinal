@@ -34,12 +34,7 @@ include Makefile
 OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
-OBJECTFILES= \
-	${OBJECTDIR}/ClassicTyping.o \
-	${OBJECTDIR}/Final.o \
-	${OBJECTDIR}/FuncionesBasicas.o \
-	${OBJECTDIR}/Funciones_Especificas.o \
-	${OBJECTDIR}/Te9.o
+OBJECTFILES=
 
 
 # C Compiler Flags
@@ -66,30 +61,35 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tpfinal: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tpfinal ${OBJECTFILES} ${LDLIBSOPTIONS}
 
-${OBJECTDIR}/ClassicTyping.o: ClassicTyping.c 
+${OBJECTDIR}/ClassicTyping.c.gch: ClassicTyping.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ClassicTyping.o ClassicTyping.c
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o "$@" ClassicTyping.c
 
-${OBJECTDIR}/Final.o: Final.c 
+${OBJECTDIR}/Final.c.gch: Final.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Final.o Final.c
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o "$@" Final.c
 
-${OBJECTDIR}/FuncionesBasicas.o: FuncionesBasicas.c 
+${OBJECTDIR}/FtdiManage.c.gch: FtdiManage.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/FuncionesBasicas.o FuncionesBasicas.c
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o "$@" FtdiManage.c
 
-${OBJECTDIR}/Funciones_Especificas.o: Funciones_Especificas.c 
+${OBJECTDIR}/FuncionesBasicas.c.gch: FuncionesBasicas.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Funciones_Especificas.o Funciones_Especificas.c
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o "$@" FuncionesBasicas.c
 
-${OBJECTDIR}/Te9.o: Te9.c 
+${OBJECTDIR}/Funciones_Especificas.c.gch: Funciones_Especificas.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Te9.o Te9.c
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o "$@" Funciones_Especificas.c
+
+${OBJECTDIR}/Te9.c.gch: Te9.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o "$@" Te9.c
 
 # Subprojects
 .build-subprojects:

@@ -15,6 +15,7 @@
                    projectFiles="true">
       <itemPath>ClassicTyping.c</itemPath>
       <itemPath>Final.c</itemPath>
+      <itemPath>FtdiManage.c</itemPath>
       <itemPath>FuncionesBasicas.c</itemPath>
       <itemPath>Funciones_Especificas.c</itemPath>
       <itemPath>Te9.c</itemPath>
@@ -63,6 +64,8 @@
       </item>
       <item path="Final.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="FtdiManage.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="FuncionesBasicas.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Funciones_Especificas.c" ex="false" tool="0" flavor2="0">
@@ -95,6 +98,8 @@
       <item path="Final.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Final.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="FtdiManage.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="FuncionesBasicas.c" ex="false" tool="0" flavor2="0">
       </item>
