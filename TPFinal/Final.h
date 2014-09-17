@@ -4,6 +4,17 @@
  *
  * Created on June 25, 2014, 1:30 AM
  */
+#ifndef LODELAFT
+#define LODELAFT
+void writeFTDI (unsigned char data);
+unsigned char readFTDI (void);
+int readBUTTONS (void);
+#define ARRIBA			1		
+#define IZQUIERDA		2
+#define DERECHA			3
+#define MEDIO			4
+#define ABAJO			5
+#endif
 
 #ifndef FINAL_H
 #define	FINAL_H
@@ -117,7 +128,7 @@ ALLEGRO_FONT* crearfuente (int tamano);
 
 /*Inicializara los componentes de allegro*/
 
-int inicializar (struct ftdi_context ftdic);
+
 
 
 
@@ -243,7 +254,8 @@ char *escribiroracion (char *oracion);
 /*Funcion que borra palabras*/
 void borrarpalabra (void);
 
-
+int analizartecladolinterna(ALLEGRO_EVENT_QUEUE* eventos, int* pestado);
+void mantenerlinterna(int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla, INFOPANTALLA mipantalla);
 
 /*
  * Definicion de constantes que serviran para diferenes motivos

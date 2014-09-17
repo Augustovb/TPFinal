@@ -154,72 +154,7 @@ ALLEGRO_FONT* crearfuente (int tamano){
     return fuente;
     
 }
-int inicializar (struct ftdi_context ftdic){
-    
-    if(!al_init()){
-        fprintf(stderr,"No se pudo inicializar Allegro\n");
-        return 1;
-    }
-    
-    al_install_keyboard();
-    al_install_mouse();     //instalo los perifericos
-    al_install_audio();
-    
-    al_init_font_addon();    // inicializo el font addon
-    
-    
-    
-    if(!al_init_ttf_addon()){
-        fprintf(stderr,"No se inicializo el addon ttf.\n");
-        return -1;     
-        
-        
-    }// inicializo el True Type Font addon
-    
-    
-    if(!al_init_acodec_addon()){
-        fprintf(stderr,"No se inicializo el addon de acodec\n");
-        return -1;
-    }           //es el addon de audio
-    
-    if(!al_init_image_addon()){
-        fprintf(stderr,"No se inicializo el addon de imagenes\n");
-        return -1;
-    }           //addon de imagenes
-    
-    
-    if(!al_init_primitives_addon()){
-        fprintf(stderr,"No se inicializo el addon de acodec\n");
-        return -1;
-    }       //por ultimo el de primitivas
-    
-   
-    
-    
-    //Aca empieza la inicializacion ftdiezca
-                    int ret;
-    
-                    /* Initialize context for subsequent function calls */
 
-                    ftdi_init(&ftdic);
-
-                    /* Open FTDI device*/
-
-                    if(ftdi_usb_open(&ftdic, 0x0403, 0x6001) < 0) {
-                        puts("Can't open device");
-    
-                    }
-
-                    if ((ret = ftdi_set_bitmode(&ftdic, IO, 0x01)) < 0) {		/*Elegimos que puertos leer y que escribir*/
-                            fprintf(stderr, "unable to set bitmode\n");
-                        
-                     }
-    
-  
-    //Aca termina
-    
-    return 0;
-}
 INFOPANTALLA getuserdata(void){
     FILE* miarchivo=NULL;
     unsigned int i=0,j=0;   //contadores

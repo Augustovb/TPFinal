@@ -61,7 +61,7 @@ int tecladoCLASSIC1 (ALLEGRO_EVENT_QUEUE* eventos,ALLEGRO_BITMAP* pantalla, ALLE
                     if(ev.mouse.y>450&&ev.mouse.y<490){//se presiono la teclaselect
                             *linea1=*linea1-0x20;
                             strcpy(mipantalla->usuario,linea1); 
-                            *estadoconfiguracion=FONDO;
+                            *estadoconfiguracion=PERSONALIZAR;
                             break;
                     }
                     else if(ev.mouse.y>490&&ev.mouse.y<540){

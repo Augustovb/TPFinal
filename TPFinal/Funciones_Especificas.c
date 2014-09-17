@@ -15,16 +15,17 @@
 
 int analizartecladoconfiguracion (ALLEGRO_EVENT_QUEUE* eventos,int * estadoconfiguracion, int* pestado, INFOPANTALLA* pantalla){
         //de aca en adelante es simplemente la funcionde leerteclado que por comodidad no la pongo afuera
-    
+    int infoFtdi=0;
+    unsigned char info;
     
     while(1){                   // esto es la funcion que lee de donde se clickeo
         ALLEGRO_EVENT ev;
         al_wait_for_event(eventos,&ev);
-        
+        infoFtdi=readBUTTONS();
         if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
             break;
-        } else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-            if(ev.mouse.button & 1){
+        } else if((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)||(infoFtdi!=0)){
+            if((ev.mouse.button & 1)||(infoFtdi!=0)){
                 //aca iran los ifs que veran el ev.mouse.x y el ev.mouse.y
                 if(ev.mouse.x>30&&ev.mouse.x<110){      
                     if(ev.mouse.y>450&&ev.mouse.y<490){             //TECLA SELECT
@@ -87,9 +88,9 @@ int analizartecladoconfiguracion (ALLEGRO_EVENT_QUEUE* eventos,int * estadoconfi
                             
                     }
                        
-                } else if(ev.mouse.x>110&&ev.mouse.x<208){  //son las teclas de la linea media que incluyen los centrales
+                } else if((ev.mouse.x>110&&ev.mouse.x<208)||(infoFtdi!=0)){  //son las teclas de la linea media que incluyen los centrales
                     //analizo primero lo de las "flechitas"y el boton del medio
-                    if(ev.mouse.y>450&&ev.mouse.y<460){
+                    if((ev.mouse.y>450&&ev.mouse.y<460)||infoFtdi==ARRIBA){
                             if(*estadoconfiguracion==COMPANIA){*estadoconfiguracion=USUARIO; break;}  //tecla para arrriba
                             else if(*estadoconfiguracion==TT9){*estadoconfiguracion=TECLADONORMAL; break;}
                             else if(*estadoconfiguracion==CLASICO){*estadoconfiguracion=TT9; break;}
@@ -146,7 +147,7 @@ int analizartecladoconfiguracion (ALLEGRO_EVENT_QUEUE* eventos,int * estadoconfi
                             
                         
                         
-                    } else if (ev.mouse.y>525&&ev.mouse.y<540){
+                    } else if ((ev.mouse.y>525&&ev.mouse.y<540)||(infoFtdi==ABAJO)){
                            if(*estadoconfiguracion==USUARIO){*estadoconfiguracion=COMPANIA; break;} //teclaparaabajo
                            else if(*estadoconfiguracion==TT9){*estadoconfiguracion=CLASICO; break;}
                            else if(*estadoconfiguracion==CLASICO){*estadoconfiguracion=TECLADONORMAL; break;}
@@ -195,12 +196,69 @@ int analizartecladoconfiguracion (ALLEGRO_EVENT_QUEUE* eventos,int * estadoconfi
                             
                         
                         
-                    } else if(ev.mouse.y>460&&ev.mouse.y<540){  //der, izq o medio
-                                if(ev.mouse.x>130&&ev.mouse.x<188){
-                                    
-                                    
-                                    
-                                }     //la del medio
+                    } else if((ev.mouse.y>460&&ev.mouse.y<540)||(infoFtdi!=0)){  //der, izq o medio
+                                if((ev.mouse.x<130&&ev.mouse.x>0)||(infoFtdi==IZQUIERDA)){
+                                     *pestado=MENU;    //hacia la izquierda
+                                     break;
+                                } else if(ev.mouse.x>188||infoFtdi==DERECHA){
+                                    break;         //la de la derecha
+                                } else if ((infoFtdi==MEDIO)) {    //la del medio
+                            if(*estadoconfiguracion==USUARIO){*estadoconfiguracion=INUSUARIO;break;} 
+                            if(*estadoconfiguracion==MENSAJEPERSONAL){*estadoconfiguracion=MPCOLOR; break;}
+                            
+                            else if(*estadoconfiguracion==COMPANIA){*estadoconfiguracion=CMOVISTAR; break;}
+                            
+                            else if(*estadoconfiguracion==CMOVISTAR){*estadoconfiguracion=COMPANIA; pantalla->compania=MOVISTAR; break; }
+                            
+                            else if(*estadoconfiguracion==CPERSONAL){*estadoconfiguracion=COMPANIA; pantalla->compania=PERSONAL; break;}
+                            
+                            else if(*estadoconfiguracion==CCLARO){*estadoconfiguracion=COMPANIA; pantalla->compania=CLARO; break;}
+                            
+                            else if(*estadoconfiguracion==CNEXTEL){*estadoconfiguracion=COMPANIA; pantalla->compania=NEXTEL; break;}
+                            
+                            else if(*estadoconfiguracion==TIPOESCRITURA){*estadoconfiguracion=TT9; break;}
+                            
+                            else if(*estadoconfiguracion==TT9){*estadoconfiguracion=TIPOESCRITURA; pantalla->tipoescritura=T9; break;}
+                            
+                            else if(*estadoconfiguracion==MODOLIBRE){*estadoconfiguracion=TIPOESCRITURA; pantalla->tipoescritura=CLASICO; break;}
+                            
+                            else if(*estadoconfiguracion==TECLADONORMAL){*estadoconfiguracion=TIPOESCRITURA; pantalla->tipoescritura=TECLADOANALOGO; break;}
+                            else if(*estadoconfiguracion==FONDO){*estadoconfiguracion=FBLANCO; break;}
+                            
+                            else if(*estadoconfiguracion==FBLANCO){*estadoconfiguracion=FONDO; pantalla->fondo.entro=NOCAMBIO; break;}
+                            
+                            else if(*estadoconfiguracion==FROJO){*estadoconfiguracion=FONDO; pantalla->fondo.entro=ROJO; break;}
+                            else if(*estadoconfiguracion==FAMARILLO){*estadoconfiguracion=FONDO; pantalla->fondo.entro=AMARILLO; break;}
+                            else if(*estadoconfiguracion==FVERDE){*estadoconfiguracion=FONDO; pantalla->fondo.entro=VERDE; break;}
+                            else if(*estadoconfiguracion==FMORADO){*estadoconfiguracion=FONDO; pantalla->fondo.entro=MORADO; break;}
+                            else if(*estadoconfiguracion==FCELESTE){*estadoconfiguracion=FONDO; pantalla->fondo.entro=CELESTE; break;}
+                            else if(*estadoconfiguracion==FNARANJA){*estadoconfiguracion=FONDO; pantalla->fondo.entro=NARANJA; break;}
+                            else if(*estadoconfiguracion==FROSA){*estadoconfiguracion=FONDO; pantalla->fondo.entro=ROSA; break;}
+                            
+                            else if(*estadoconfiguracion==MPCOLOR){*estadoconfiguracion=MPROJO; break;}
+                            else if(*estadoconfiguracion==MPTAMANO){*estadoconfiguracion=MPPEQUENA; break;}
+                            else if(*estadoconfiguracion==MPTEXTO){*estadoconfiguracion=INGRESARTEXTO; break;}
+                            
+                            else if(*estadoconfiguracion==MPBLANCO){*estadoconfiguracion=MPCOLOR; pantalla->mensajecolor.tipocolor=NOCAMBIO; break;}
+                            else if(*estadoconfiguracion==MPROJO){*estadoconfiguracion=MPCOLOR; pantalla->mensajecolor.tipocolor=ROJO; break;}
+                            else if(*estadoconfiguracion==MPAMARILLO){*estadoconfiguracion=MPCOLOR; pantalla->mensajecolor.tipocolor=AMARILLO; break;}
+                            else if(*estadoconfiguracion==MPVERDE){*estadoconfiguracion=MPCOLOR; pantalla->mensajecolor.tipocolor=VERDE; break;}
+                            else if(*estadoconfiguracion==MPMORADO){*estadoconfiguracion=MPCOLOR; pantalla->mensajecolor.tipocolor=MORADO; break;}
+                            else if(*estadoconfiguracion==MPCELESTE){*estadoconfiguracion=MPCOLOR; pantalla->mensajecolor.tipocolor=CELESTE; break;}
+                            else if(*estadoconfiguracion==MPNARANJA){*estadoconfiguracion=MPCOLOR; pantalla->mensajecolor.tipocolor=NARANJA; break;}
+                            else if(*estadoconfiguracion==MPROSA){*estadoconfiguracion=MPCOLOR; pantalla->mensajecolor.tipocolor=ROSA; break;}
+                            
+                            else if(*estadoconfiguracion==TT9){*estadoconfiguracion=TIPOESCRITURA; pantalla->tipoescritura=T9; break;}
+                            else if(*estadoconfiguracion==CLASICO){*estadoconfiguracion=TIPOESCRITURA; pantalla->tipoescritura=MODOLIBRE; break;}
+                            else if(*estadoconfiguracion==TECLADONORMAL){*estadoconfiguracion=TIPOESCRITURA; pantalla->tipoescritura=TECLADOANALOGO; break;}
+                            
+                            
+                            else if(*estadoconfiguracion==MPPEQUENA){*estadoconfiguracion=MPTAMANO; pantalla->tamanomensaje=PEQUENA; break;}
+                            else if(*estadoconfiguracion==MMEDIA){*estadoconfiguracion=MPTAMANO; pantalla->tamanomensaje=MEDIA; break;}
+                            else if(*estadoconfiguracion==MGRANDE){*estadoconfiguracion=MPTAMANO; pantalla->tamanomensaje=GRANDE; break;}
+                            else if(*estadoconfiguracion==MGIGANTE){*estadoconfiguracion=MPTAMANO; pantalla->tamanomensaje=GIGANTE; break;}                                    
+                                    break;
+                                }    //la del medio
                     } 
                     
                 } else if(ev.mouse.x>208&&ev.mouse.x<288){      //pueden ser back,colgar,3,6,9 o numeral
@@ -914,17 +972,18 @@ void mantenerpantalla(INFOPANTALLA datos,ALLEGRO_DISPLAY* display, ALLEGRO_BITMA
 }
 int analizartecladopantalla (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla ){            //lo unico para clickear es el menu
         //de aca en adelante es simplemente la funcionde leerteclado que por comodidad no la pongo afuera
-    
+    int infoFtdi=0;
+    unsigned char info;
     
     while(1){                   // esto es la funcion que lee de donde se clickeo
         ALLEGRO_EVENT ev;
         al_wait_for_event(eventos,&ev);
-        
+        infoFtdi=readBUTTONS();
         if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
             *pestado=FINALIZAR;
             break;
-        } else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-            if(ev.mouse.button & 1){
+        } else if((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)||(infoFtdi!=0)){
+            if((ev.mouse.button & 1)||(infoFtdi!=0)){
                 //aca iran los ifs que veran el ev.mouse.x y el ev.mouse.y
                 if(ev.mouse.x>30&&ev.mouse.x<110){      //pueden ser el select, llamar,1,4,7,*
                     if(ev.mouse.y>450&&ev.mouse.y<490){
@@ -946,18 +1005,23 @@ int analizartecladopantalla (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,ALLEGRO_D
                     else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x>50){
                                 //tecla asterisco
                     }    
-                } else if(ev.mouse.x>110&&ev.mouse.x<208){  //son las teclas de la linea media que incluyen los centrales
+                } else if((ev.mouse.x>110&&ev.mouse.x<208)||(infoFtdi!=0)){  //son las teclas de la linea media que incluyen los centrales
                     //analizo primero lo de las "flechitas"y el boton del medio
-                    if(ev.mouse.y>450&&ev.mouse.y<460){
+                    if((ev.mouse.y>450&&ev.mouse.y<460)||infoFtdi==ARRIBA){
                               //tecla para arrriba
-                    } else if (ev.mouse.y>525&&ev.mouse.y<540){
+                    } else if ((ev.mouse.y>525&&ev.mouse.y<540)||(infoFtdi==ABAJO)){
                             //teclaparaabajo
-                    } else if(ev.mouse.y>460&&ev.mouse.y<540){  //der, izq o medio
-                                if(ev.mouse.x<130){
+                    } else if((ev.mouse.y>460&&ev.mouse.y<540)||(infoFtdi!=0)){  //der, izq o medio
+                        
+                                if((ev.mouse.x<130&&ev.mouse.x>0)||(infoFtdi==IZQUIERDA)){
                                          //hacia la izquierda
-                                } else if(ev.mouse.x>188){
+                                } else if((ev.mouse.x>188)||(infoFtdi==DERECHA)){
                                              //la de la derecha
-                                } else{}     //la del medio
+                                } else {
+                                    
+                                    *pestado=MENU;
+                                    break;
+                                }     //la del medio
                     } else if(ev.mouse.y>540&&ev.mouse.y<585){
                                    //tecla 2
                     }
@@ -1000,8 +1064,6 @@ int analizartecladopantalla (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,ALLEGRO_D
 
     return 0;
 }
-
-
 
 void mantenermenu(int* pestado, int* estadomenu,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla,INFOPANTALLA mipantalla){
     
@@ -1079,17 +1141,19 @@ void mantenermenu(int* pestado, int* estadomenu,ALLEGRO_DISPLAY* display, ALLEGR
 
 int analizartecladomenu (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,int* estadomenu){
         //de aca en adelante es simplemente la funcionde leerteclado que por comodidad no la pongo afuera
-    
+    int infoFtdi=0;
+    unsigned char info;
     
     while(1){                   // esto es la funcion que lee de donde se clickeo
         ALLEGRO_EVENT ev;
         al_wait_for_event(eventos,&ev);
+        infoFtdi=readBUTTONS();
         
         if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
             *pestado=FINALIZAR;
             break;
-        } else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-            if(ev.mouse.button & 1){
+        } else if((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)||(infoFtdi!=0)){
+            if((ev.mouse.button & 1)||(infoFtdi!=0)){
                 //aca iran los ifs que veran el ev.mouse.x y el ev.mouse.y
                 if(ev.mouse.x>30&&ev.mouse.x<110){      //pueden ser el select, llamar,1,4,7,*
                     if(ev.mouse.y>450&&ev.mouse.y<490){
@@ -1114,31 +1178,34 @@ int analizartecladomenu (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,int* estadome
                     else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x>50){
                                 //tecla asterisco
                     }    
-                } else if(ev.mouse.x>110&&ev.mouse.x<208){  //son las teclas de la linea media que incluyen los centrales
+                } else if((ev.mouse.x>110&&ev.mouse.x<208)||(infoFtdi!=0)){  //son las teclas de la linea media que incluyen los centrales
                     //analizo primero lo de las "flechitas"y el boton del medio
-                    if(ev.mouse.y>450&&ev.mouse.y<460){
+                    if((ev.mouse.y>450&&ev.mouse.y<460)||infoFtdi==ARRIBA){
                             if(*estadomenu==POS1){continue;}  //tecla para arrriba
                             if(*estadomenu==POS2){*estadomenu=POS1; break;}     //(subo)
                             if(*estadomenu==POS3){*estadomenu=POS2; break;}
                             if(*estadomenu==POS4){*estadomenu=POS3; break;}
                             
                             
-                    } else if (ev.mouse.y>525&&ev.mouse.y<540){
+                    } else if ((ev.mouse.y>525&&ev.mouse.y<540)||(infoFtdi==ABAJO)){
                             if(*estadomenu==POS1){*estadomenu=POS2; break;}//teclaparaabajo
                             if(*estadomenu==POS2){*estadomenu=POS3; break;}
                             if(*estadomenu==POS3){*estadomenu=POS4; break;}
                             if(*estadomenu==POS4){continue;}
-                    } else if(ev.mouse.y>460&&ev.mouse.y<540){  //der, izq o medio
-                                if(ev.mouse.x<130){
-                                         //hacia la izquierda
-                                } else if(ev.mouse.x>188){
-                                             //la de la derecha
-                                } else{
+                    } else if((ev.mouse.y>460&&ev.mouse.y<540)||(infoFtdi!=0)){  //der, izq o medio
+                                if((ev.mouse.x<130&&ev.mouse.x>0)||(infoFtdi==IZQUIERDA)){
+                                     *pestado=PANTALLAPRINCIPAL;    //hacia la izquierda
+                                     break;
+                                } else if(ev.mouse.x>188||infoFtdi==DERECHA){
+                                    break;         //la de la derecha
+                                } else if ((infoFtdi==MEDIO)) {    //la del medio
                                     if(*estadomenu==POS1){*pestado=MENSAJE;break;}
-                                    else if(*estadomenu==POS2){*pestado=PERSONALIZAR;break;}
-                                    else if(*estadomenu==POS3){*pestado=LINTERNA;break;}
-                                    else if(*estadomenu==POS4){*pestado=FIESTA;break;}
-                                }     //la del medio
+                                else if(*estadomenu==POS2){*pestado=PERSONALIZAR;break;}  //se presiono la teclaselect
+                                else if(*estadomenu==POS3){*pestado=LINTERNA;break;}
+                                else if(*estadomenu==POS4){*pestado=FIESTA;break;}
+
+                                    
+                                }
                     } else if(ev.mouse.y>540&&ev.mouse.y<585){
                                    //tecla 2
                     }
@@ -1183,11 +1250,7 @@ int analizartecladomenu (ALLEGRO_EVENT_QUEUE* eventos,int* pestado,int* estadome
     return 0;
 }
 
-
-
-
-void mantenerlinterna(int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla, INFOPANTALLA mipantalla,struct ftdi_context ftdic);
-void mantenerlinterna(int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla, INFOPANTALLA mipantalla,struct ftdi_context ftdic){
+void mantenerlinterna(int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla, INFOPANTALLA mipantalla){
     
     ALLEGRO_FONT* fuente;
     fuente=crearfuente(MEDIA);
@@ -1209,22 +1272,28 @@ void mantenerlinterna(int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pan
         exit -1;
     }
     
-    char data;
+    unsigned char data;
                                     //yo pondre como linterna el bit 0
-    data=getFTDIdata(ftdic);
     
-    data=data & 0xFE;
     
-    if(data==0x00){
-        al_draw_bitmap(apagado,0,0,0);    
+    data=readFTDI();
+    
+    data&=0x20;
+    if (data==0x20){
+        
+        cambiopantalla(display,pantalla);
+        al_draw_bitmap(prendido,3,15,0);
+        cambiopantalla(display,pantalla);
     } else {
-        al_draw_bitmap(prendido,0,0,0);
+        cambiopantalla(display,pantalla);
+        al_draw_bitmap(apagado,3,15,0);
+        cambiopantalla(display,pantalla);
     }
     
-    
-    
-    
-    
+    cambiopantalla(display,pantalla);
+    al_draw_text(fuente,al_map_rgb(0,0,0),0,270,ALLEGRO_ALIGN_LEFT,"Flechitas!");         //creo boton menu o cualquier otro boton que quiera poner
+    al_draw_text(fuente,al_map_rgb(0,0,0),210,270,ALLEGRO_ALIGN_RIGHT,"Volver");
+    cambiopantalla(display,pantalla);
     
     al_destroy_bitmap(prendido);
     al_destroy_bitmap(apagado);
@@ -1232,23 +1301,21 @@ void mantenerlinterna(int* pestado,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pan
     al_destroy_font(fuente);
 }
 
-
-int analizartecladolinterna(ALLEGRO_EVENT_QUEUE* eventos, int* pestado);
-
-
 int analizartecladolinterna(ALLEGRO_EVENT_QUEUE* eventos, int* pestado){
     
             //de aca en adelante es simplemente la funcionde leerteclado que por comodidad no la pongo afuera
-    char infoFtdi;
-    
+    int infoFtdi=0;
+    unsigned char info;
     while(1){                   // esto es la funcion que lee de donde se clickeo
         ALLEGRO_EVENT ev;
         al_wait_for_event(eventos,&ev);
+        infoFtdi=readBUTTONS();
         
         if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
             break;
-        } else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-            if(ev.mouse.button & 1){
+        } else if((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)||(infoFtdi!=0)){
+            if((ev.mouse.button & 1)||(infoFtdi!=0)){
+                
                 //aca iran los ifs que veran el ev.mouse.x y el ev.mouse.y
                 if(ev.mouse.x>30&&ev.mouse.x<110){      //pueden ser el select, llamar,1,4,7,*
                     if(ev.mouse.y>450&&ev.mouse.y<490){
@@ -1269,18 +1336,36 @@ int analizartecladolinterna(ALLEGRO_EVENT_QUEUE* eventos, int* pestado){
                     else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x>50){
                                 //tecla asterisco
                     }    
-                } else if(ev.mouse.x>110&&ev.mouse.x<208){  //son las teclas de la linea media que incluyen los centrales
+                } else if((ev.mouse.x>110&&ev.mouse.x<208)||(infoFtdi!=0)){  //son las teclas de la linea media que incluyen los centrales
                     //analizo primero lo de las "flechitas"y el boton del medio
-                    if(ev.mouse.y>450&&ev.mouse.y<460){
-                              //tecla para arrriba
-                    } else if (ev.mouse.y>525&&ev.mouse.y<540){
-                            //teclaparaabajo
-                    } else if(ev.mouse.y>460&&ev.mouse.y<540){  //der, izq o medio
-                                if(ev.mouse.x<130){
-                                         //hacia la izquierda
-                                } else if(ev.mouse.x>188){
-                                             //la de la derecha
-                                } else{}     //la del medio
+                    if((ev.mouse.y>450&&ev.mouse.y<460)||infoFtdi==ARRIBA){
+                        
+                                info= readFTDI();
+
+                                info|=0x20;
+
+                                writeFTDI(info);//tecla para arrriba
+                                
+                                break;
+                    } else if ((ev.mouse.y>525&&ev.mouse.y<540)||(infoFtdi==ABAJO)){
+                        
+                                info= readFTDI();
+
+                                info&=0xDF;
+
+                                writeFTDI(info);//teclaparaabajo
+                                
+                                break;
+                    } else if((ev.mouse.y>460&&ev.mouse.y<540)||(infoFtdi!=0)){  //der, izq o medio
+                        
+                                if((ev.mouse.x<130)||(infoFtdi==IZQUIERDA)){
+                                     *pestado=MENU;    //hacia la izquierda
+                                     break;
+                                } else if(ev.mouse.x>188||infoFtdi==DERECHA){
+                                    break;         //la de la derecha
+                                } else if ((infoFtdi==MEDIO)) {    //la del medio
+                                    break;
+                                }
                     } else if(ev.mouse.y>540&&ev.mouse.y<585){
                                    //tecla 2
                     }
@@ -1296,10 +1381,12 @@ int analizartecladolinterna(ALLEGRO_EVENT_QUEUE* eventos, int* pestado){
                     
                 } else if(ev.mouse.x>208&&ev.mouse.x<288){      //pueden ser back,colgar,3,6,9 o numeral
                     if(ev.mouse.y>450&&ev.mouse.y<490){
-                              //se presiono la tecla back
+                            *pestado=MENU;//se presiono la tecla back
+                            break;
                     }
                     else if(ev.mouse.y>490&&ev.mouse.y<540){
-                             //tecla roja,colgar
+                            *pestado=PANTALLAPRINCIPAL;//tecla roja,colgar
+                            break;
                     }
                     else if(ev.mouse.y>540&&ev.mouse.y<585){
                                    //tecla 3
@@ -1323,3 +1410,7 @@ int analizartecladolinterna(ALLEGRO_EVENT_QUEUE* eventos, int* pestado){
     return 0;
     
 }
+
+
+
+        

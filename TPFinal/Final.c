@@ -22,6 +22,26 @@
 /*
  *Main
  */
+
+//DESDE ACA
+#ifndef LODELAFT
+#define LODELAFT
+void writeFTDI (unsigned char data);
+unsigned char readFTDI (void);
+int readBUTTONS (void);
+#endif
+struct ftdi_context ftdic;
+unsigned char buf[1024];
+char lastval;
+
+
+int inicializar (void);
+
+
+ /* HASTA ACA DESPROLIJIDAD SOLO POR LA FERIA*/ 
+
+
+
 int main(int argc, char** argv) {
     int estado=0;
     int* pestado=&estado;
@@ -30,10 +50,10 @@ int main(int argc, char** argv) {
     int estadoconfiguracion=USUARIO;
     int* pestadoconfiguracion=&estadoconfiguracion;
     int condiciones=0;      //por lo que me devuelva la funcion setear comienzo
-    struct ftdi_context ftdic;
     
     
-    if(inicializar(ftdic)){
+    
+    if(inicializar()){
         return -1;
     }
     
@@ -110,8 +130,10 @@ int main(int argc, char** argv) {
             analizartecladoconfiguracion(eventos,pestadoconfiguracion,pestado,pmipantalla);        
         }
         if(estado== LINTERNA){
-            printf("Entraste a interna\n");
-            estado=MENU;
+            mantenerlinterna(pestado,display,pantalla,mipantalla);
+            analizartecladolinterna(eventos,pestado);
+            mantenerlinterna(pestado,display,pantalla,mipantalla);
+            
         }
         if(estado==FIESTA){
             printf("Entraste a fiesta\n");
@@ -124,7 +146,9 @@ int main(int argc, char** argv) {
     
     putuserdata(mipantalla);
     *pestado=PANTALLAPRINCIPAL;
+    
     return (EXIT_SUCCESS);
+    
 }
 
 
@@ -133,6 +157,123 @@ int main(int argc, char** argv) {
 
 
 
+int inicializar(void){
+    
+    if(!al_init()){
+        fprintf(stderr,"No se pudo inicializar Allegro\n");
+        return 1;
+    }
+    
+    al_install_keyboard();
+    al_install_mouse();     //instalo los perifericos
+    al_install_audio();
+    
+    al_init_font_addon();    // inicializo el font addon
+    
+    
+    
+    if(!al_init_ttf_addon()){
+        fprintf(stderr,"No se inicializo el addon ttf.\n");
+        return -1;     
+        
+        
+    }// inicializo el True Type Font addon
+    
+    
+    if(!al_init_acodec_addon()){
+        fprintf(stderr,"No se inicializo el addon de acodec\n");
+        return -1;
+    }           //es el addon de audio
+    
+    if(!al_init_image_addon()){
+        fprintf(stderr,"No se inicializo el addon de imagenes\n");
+        return -1;
+    }           //addon de imagenes
+    
+    
+    if(!al_init_primitives_addon()){
+        fprintf(stderr,"No se inicializo el addon de acodec\n");
+        return -1;
+    }       //por ultimo el de primitivas
+    
+   
+    
+    
+    //Aca empieza la inicializacion ftdiezca
+        int ret=0;
+        //Initialize context for subsequent function calls 
+        ftdi_init(&ftdic);
+
+    // Open FTDI device based on FT245R vendor & product IDs 
+        if(ftdi_usb_open(&ftdic, 0x0403, 0x6001) < 0) {
+            puts("Can't open device");
+            return -1;
+    
+        }
+
+        if ((ret = ftdi_set_bitmode(&ftdic, 0xE0, 0x01)) < 0) {
+            fprintf(stderr, "unable to set bitmode\n");
+            return -1;
+        }
+        
+        writeFTDI((unsigned char)0x1F);
+       
+    return 0;
+}
+
+
+
+
+
+void writeFTDI (unsigned char data)
+
+ {
+   
+    static unsigned char x = 0xFF;
+    x = data;
+    ftdi_write_data(&ftdic, &x, 1);
+                       
+}
+
+unsigned char readFTDI (void)
+{
+    
+    int f = 0; 
+    f= ftdi_read_data(&ftdic,buf,sizeof(buf));
+    
+    return buf[0]; 
+
+}
+
+
+
+
+
+int readBUTTONS (void){
+    int f = 0; 
+    
+    
+    
+    f = ftdi_read_data(&ftdic, buf, sizeof(buf));
+    
+    lastval = (buf[0] & 0x1F);
+   
+    while ((lastval == (buf[0] & 0x1F)) && lastval != 0x1F)
+        f = ftdi_read_data(&ftdic, buf, sizeof(buf));
+    
+    if (lastval==0x1E){
+        return ARRIBA;
+    } else if(lastval==0x1D){
+        return IZQUIERDA;
+    } else if(lastval==0x17){
+        return DERECHA;
+    } else if (lastval==0x1B){
+        return MEDIO;
+    }else if (lastval==0x0F){
+        return ABAJO;
+    } else {return 0;}
+    
+}
 
 
 

@@ -37,7 +37,6 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/ClassicTyping.o \
 	${OBJECTDIR}/Final.o \
-	${OBJECTDIR}/FtdiManage.o \
 	${OBJECTDIR}/FuncionesBasicas.o \
 	${OBJECTDIR}/Funciones_Especificas.o \
 	${OBJECTDIR}/Te9.o
@@ -76,11 +75,6 @@ ${OBJECTDIR}/Final.o: Final.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Final.o Final.c
-
-${OBJECTDIR}/FtdiManage.o: FtdiManage.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/FtdiManage.o FtdiManage.c
 
 ${OBJECTDIR}/FuncionesBasicas.o: FuncionesBasicas.c 
 	${MKDIR} -p ${OBJECTDIR}

@@ -37,7 +37,6 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/ClassicTyping.o \
 	${OBJECTDIR}/Final.o \
-	${OBJECTDIR}/FtdiManage.o \
 	${OBJECTDIR}/FuncionesBasicas.o \
 	${OBJECTDIR}/Funciones_Especificas.o \
 	${OBJECTDIR}/Te9.o
@@ -76,11 +75,6 @@ ${OBJECTDIR}/Final.o: Final.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -g `pkg-config --cflags allegro-5.0` `pkg-config --cflags allegro_acodec-5.0` `pkg-config --cflags allegro_audio-5.0` `pkg-config --cflags allegro_font-5.0` `pkg-config --cflags allegro_image-5.0` `pkg-config --cflags allegro_primitives-5.0` `pkg-config --cflags allegro_ttf-5.0` `pkg-config --cflags libftdi`   -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Final.o Final.c
-
-${OBJECTDIR}/FtdiManage.o: FtdiManage.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -g `pkg-config --cflags allegro-5.0` `pkg-config --cflags allegro_acodec-5.0` `pkg-config --cflags allegro_audio-5.0` `pkg-config --cflags allegro_font-5.0` `pkg-config --cflags allegro_image-5.0` `pkg-config --cflags allegro_primitives-5.0` `pkg-config --cflags allegro_ttf-5.0` `pkg-config --cflags libftdi`   -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/FtdiManage.o FtdiManage.c
 
 ${OBJECTDIR}/FuncionesBasicas.o: FuncionesBasicas.c 
 	${MKDIR} -p ${OBJECTDIR}
