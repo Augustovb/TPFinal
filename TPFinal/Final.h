@@ -62,9 +62,9 @@ void putuserdata (INFOPANTALLA mipantalla);
 /*Configura el mantenerconfiguracion*/
 void mantenerconfiguracion(int * estadoconfiguracion,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla,ALLEGRO_EVENT_QUEUE* eventos, int* pestado,INFOPANTALLA* mipantalla);
 
-
-
-
+int analizartecladofiesta (ALLEGRO_EVENT_QUEUE* eventos, int* pestado ,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla);
+void dontstoptheparty (int* pestado, ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla);
+void fiesta (ALLEGRO_EVENT_QUEUE* eventos, int* pestado ,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla);
 
 /*analiza el eclado estando en la configuracion*/
 int analizartecladoconfiguracion (ALLEGRO_EVENT_QUEUE* eventos,int* estadoconfiguracion, int* pestado,INFOPANTALLA* pantalla);

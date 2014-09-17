@@ -1413,4 +1413,264 @@ int analizartecladolinterna(ALLEGRO_EVENT_QUEUE* eventos, int* pestado){
 
 
 
+
+int analizartecladofiesta (ALLEGRO_EVENT_QUEUE* eventos, int* pestado ,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla){
+    
+    int infoFtdi=0;
+    unsigned char info;
+    while(1){                   // esto es la funcion que lee de donde se clickeo
+        ALLEGRO_EVENT ev;
+        al_wait_for_event(eventos,&ev);
+        infoFtdi=readBUTTONS();
         
+        if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+            break;
+        } else if((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)||(infoFtdi!=0)){
+            if((ev.mouse.button & 1)||(infoFtdi!=0)){
+                
+                //aca iran los ifs que veran el ev.mouse.x y el ev.mouse.y
+                if(ev.mouse.x>30&&ev.mouse.x<110){      //pueden ser el select, llamar,1,4,7,*
+                    if(ev.mouse.y>450&&ev.mouse.y<490){
+                              //se presiono la teclaselect
+                    }
+                    else if(ev.mouse.y>490&&ev.mouse.y<540){
+                              //tecla verde, llamar
+                    }
+                    else if(ev.mouse.y>540&&ev.mouse.y<585){
+                                  //tecla 1
+                    }
+                    else if(ev.mouse.y>585&&ev.mouse.y<630){
+                                   //tecla 4
+                    }
+                    else if(ev.mouse.y>630&&ev.mouse.y<675){
+                                   //tecla7
+                    }
+                    else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x>50){
+                                //tecla asterisco
+                    }    
+                } else if((ev.mouse.x>110&&ev.mouse.x<208)||(infoFtdi!=0)){  //son las teclas de la linea media que incluyen los centrales
+                    //analizo primero lo de las "flechitas"y el boton del medio
+                    if((ev.mouse.y>450&&ev.mouse.y<460)||infoFtdi==ARRIBA){
+                                        info= readFTDI();
+
+                                        info|=0x20;
+
+                                        writeFTDI(info);                   
+                                        
+                                        sleep(1);
+                                        info= readFTDI();
+
+                                        info&=0xDF;
+
+                                        writeFTDI(info);
+                                        
+                                
+                                
+                    } else if ((ev.mouse.y>525&&ev.mouse.y<540)||(infoFtdi==ABAJO)){
+                                *pestado=MENU;
+
+                                break;
+                    } else if((ev.mouse.y>460&&ev.mouse.y<540)||(infoFtdi!=0)){  //der, izq o medio
+                        
+                                if((ev.mouse.x<130 && ev.mouse.x>0)||(infoFtdi==IZQUIERDA)){//hacia la izquierda
+                                        info= readFTDI();
+
+                                        info|=0x40;
+
+                                        writeFTDI(info);                   
+                                        
+                                        sleep(1);
+                                        info= readFTDI();
+
+                                        info&=0xBF;
+
+                                        writeFTDI(info);
+                                
+                                     
+                                } else if(ev.mouse.x>188||infoFtdi==DERECHA){
+                                        info= readFTDI();
+
+                                        info|=0x80;
+
+                                        writeFTDI(info);                   
+                                        
+                                        sleep(0.6);
+                                        info= readFTDI();
+
+                                        info&=0x7F;
+
+                                        writeFTDI(info);
+                                        sleep(0.6);
+                                        info= readFTDI();
+
+                                        info|=0x80;
+
+                                        writeFTDI(info);                   
+                                        
+                                        sleep(1);
+                                        info= readFTDI();
+
+                                        info&=0x7F;
+
+                                        writeFTDI(info);
+                                        sleep(1);
+                                        info= readFTDI();
+
+                                        info|=0x80;
+
+                                        writeFTDI(info);                   
+                                        
+                                        sleep(2);
+                                        info= readFTDI();
+
+                                        info&=0x7F;
+
+                                        writeFTDI(info);
+                                        
+                                             //la de la derecha
+                                } else if ((infoFtdi==MEDIO)) {    //la del medio
+                                    fiesta(eventos,pestado, display, pantalla);
+                                    
+                                }
+                    } else if(ev.mouse.y>540&&ev.mouse.y<585){
+                                   //tecla 2
+                    }
+                    else if(ev.mouse.y>585&&ev.mouse.y<630){
+                                   //tecla 5
+                    }
+                    else if(ev.mouse.y>630&&ev.mouse.y<675){
+                                   //tecla8
+                    }
+                    else if(ev.mouse.y>675&&ev.mouse.y<720){
+                                 //tecla 0
+                    } 
+                    
+                } else if(ev.mouse.x>208&&ev.mouse.x<288){      //pueden ser back,colgar,3,6,9 o numeral
+                    if(ev.mouse.y>450&&ev.mouse.y<490){
+                            *pestado=MENU;//se presiono la tecla back
+                            break;
+                    }
+                    else if(ev.mouse.y>490&&ev.mouse.y<540){
+                            *pestado=PANTALLAPRINCIPAL;//tecla roja,colgar
+                            break;
+                    }
+                    else if(ev.mouse.y>540&&ev.mouse.y<585){
+                                   //tecla 3
+                    }
+                    else if(ev.mouse.y>585&&ev.mouse.y<630){
+                                   //tecla 6
+                    }
+                    else if(ev.mouse.y>630&&ev.mouse.y<675){
+                                   //tecla9
+                    }
+                    else if(ev.mouse.y>675&&ev.mouse.y<720&&ev.mouse.x<268){
+                                 //tecla asterisco
+                }
+                
+                }  
+            }
+        }
+    }
+    
+
+    return 0;
+}
+     
+
+
+
+
+void fiesta (ALLEGRO_EVENT_QUEUE* eventos, int* pestado ,ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla){
+    ALLEGRO_BITMAP* partypeople=NULL;
+    partypeople=al_load_bitmap("partypeople.png");
+    if(partypeople==NULL){
+        fprintf(stderr,"fallo la foto partypeolple\n");
+        exit-1;
+    }
+    cambiopantalla (display,pantalla);
+    al_draw_bitmap(partypeople,0,20,0);
+    cambiopantalla (display,pantalla);
+    unsigned char info;
+   
+
+    sleep(0.5);
+                                        info= readFTDI();
+
+                                        info|=0xE0;
+
+                                        writeFTDI(info);
+    sleep(0.5);
+                                        info= readFTDI();
+
+                                        info&=0x3F;
+
+                                        writeFTDI(info);
+    sleep(0.5);
+                                        info= readFTDI();
+
+                                        info|=0x80;
+
+                                        writeFTDI(info);
+                                        info&=0xDF;
+                                        writeFTDI(info);
+    sleep(0.5);
+   info= readFTDI();
+
+                                        info|=0xE0;
+
+                                        writeFTDI(info);
+    sleep(0.5);
+    
+                                        info= readFTDI();
+
+                                        info&=0x1F;
+
+                                        writeFTDI(info);
+    
+    
+    al_destroy_bitmap (partypeople);
+    dontstoptheparty(pestado,display,pantalla);
+}
+
+void dontstoptheparty (int* pestado, ALLEGRO_DISPLAY* display, ALLEGRO_BITMAP* pantalla){
+    ALLEGRO_FONT* fuente;
+    fuente=crearfuente(MEDIA);
+    ALLEGRO_BITMAP* led=NULL;
+    ALLEGRO_BITMAP* beeper=NULL;
+    ALLEGRO_BITMAP* tiraleds=NULL;
+    ALLEGRO_BITMAP* flechitas=NULL;
+    ALLEGRO_BITMAP* fondo;
+    fondo=al_create_bitmap(285,300);
+    al_set_target_bitmap(fondo);
+    al_clear_to_color(al_map_rgb(255,255,255));
+    cambiopantalla(display,pantalla);
+    al_draw_bitmap(fondo,0,15,0);
+    cambiopantalla(display,pantalla);
+    
+    led=al_load_bitmap("led.png");
+    beeper=al_load_bitmap("beeper.png");
+    tiraleds=al_load_bitmap("tiraled.png");
+    flechitas=al_load_bitmap("flechitas.png");
+    if(led==NULL||beeper==NULL||tiraleds==NULL){
+        fprintf(stderr,"Error al cargar imagen");
+        exit -1;
+    }
+    
+    
+    cambiopantalla(display,pantalla);
+    al_draw_bitmap(led,85,20,0);        //flecha para arriba
+    al_draw_bitmap(beeper,5,124,0); //izquierda
+    al_draw_bitmap(tiraleds,170,124,0); //derecha
+    al_draw_bitmap(flechitas,60,70,0);
+    al_draw_text(fuente,al_map_rgb(0,0,0),0,270,ALLEGRO_ALIGN_LEFT,"Toogle fiesta on/off");
+    cambiopantalla(display,pantalla);
+    
+    
+    
+    al_destroy_bitmap(beeper);
+    al_destroy_bitmap(led);
+    al_destroy_bitmap(tiraleds);
+    al_destroy_bitmap(fondo);
+    al_destroy_font(fuente);
+}
+

@@ -136,8 +136,8 @@ int main(int argc, char** argv) {
             
         }
         if(estado==FIESTA){
-            printf("Entraste a fiesta\n");
-            estado=MENU;
+            dontstoptheparty (pestado,display,pantalla);
+            
         }
         
         
